@@ -1,0 +1,1169 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Purchase Order API for Etendo ERP",
+    "description": "The Purchase Order API is designed to facilitate the creation and management of purchase orders within the Etendo ERP system. It provides endpoints for accessing and manipulating data related to business partners (suppliers), products, and other essential information required to generate purchase orders efficiently.\n\n## Features\n\n- **Business Partner Information**: Retrieve detailed information about business partners (suppliers), including contact details, addresses, and transaction histories.\n- **Product Catalog**: Access a comprehensive list of products, including descriptions, pricing, and stock levels.\n- **Order Management**: Create, update, and view purchase orders, along with the ability to add products to orders and specify quantities.\n- **Other entities**: The API is capable to get other data needed for the purcharse order/invoice importation",
+    "version": "1.0.0"
+  },
+  "externalDocs": {
+    "description": "Find out more about Swagger",
+    "url": "http://swagger.io"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/etendo"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Product",
+      "description": "Everything about the products",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    },
+    {
+      "name": "businessPartner",
+      "description": "Everything about the business Partners",
+      "externalDocs": {
+        "description": "Find out more",
+        "url": "http://swagger.io"
+      }
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/sws/com.etendoerp.copilot.openapi.purchase.copilotws/searchBySimilarity/Product": {
+      "get": {
+        "summary": "Search a product by simmilarity in his name",
+        "description": "This endpoint allow to search product with a searchterm not needin",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Product"
+        ],
+        "parameters": [
+          {
+            "name": "searchTerm",
+            "in": "query",
+            "required": true,
+            "description": "Only filters by entities. Returns the specified entity from the model.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "Water"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "examples": [
+                          "BDE2F1CF46B54EF58D33E20A230DA8D2"
+                        ]
+                      },
+                      "name": {
+                        "type": "string",
+                        "examples": [
+                          "Producto"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sws/com.smf.securewebservices.obRest/Product": {
+      "get": {
+        "summary": "List records",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Product"
+        ],
+        "parameters": [
+          {
+            "name": "firstResult",
+            "in": "query",
+            "description": "First result, pagination use.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "examples": [
+                "0"
+              ]
+            }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "required": true,
+            "description": "Total number of results, used for pagination. E.g. If firstResult is 0, and maxResults is 4, then it will return 4 records starting the count from 0 (Records 0, 1, 2 and 3). Therefore, if firstResult is 10 and maxResults is 3, it will return the records 10, 11 and 12",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "examples": [
+                4
+              ]
+            }
+          },
+          {
+            "name": "distinct",
+            "in": "query",
+            "required": false,
+            "description": "Only filters by entities. Returns the specified entity from the model.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "Organization"
+              ]
+            }
+          },
+          {
+            "name": "identifiers",
+            "in": "query",
+            "required": false,
+            "description": "Include identifiers.",
+            "schema": {
+              "type": "boolean",
+              "examples": [
+                true
+              ],
+              "default": false
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "The \"Q\" parameter allows you to apply clauses to filter records based on specific criteria. For more information check <a href=\"https://etendoproject.atlassian.net/wiki/spaces/PUB/pages/3057614854/How+to+filter+using+the+q+parameter+in+SecureWebServices\">the following documentation</a>.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "uOM == '100'"
+              ]
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Clause order by in HQL. Field/s with which to sort the results.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Fields to select separated by commas.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "id",
+                "name"
+              ]
+            }
+          },
+          {
+            "name": "noActive",
+            "in": "query",
+            "description": "If it is true, non-active records will also be returned.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "examples": [
+                true
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of object from Etendo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Product"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sws/com.smf.securewebservices.obRest/Product/{recordID}": {
+      "get": {
+        "tags": null,
+        "summary": "Get Product by ID",
+        "description": "",
+        "operationId": "getProductByID",
+        "parameters": [
+          {
+            "name": "recordID",
+            "in": "path",
+            "description": "The ID of the Product to be readed",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Product"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username supplied"
+          },
+          "404": {
+            "description": "User not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "LogResp": {
+        "type": "object",
+        "title": "Login response",
+        "properties": {
+          "status": {
+            "type": "string",
+            "examplse": "success"
+          },
+          "token": {
+            "type": "string",
+            "examples": [
+              "eyJhbGciOiJIUzI1NiJ9yJhdWQiOiJzd3MiLCJyb2xlIjoiMCIsIm9yZ2FuaXphdGlvbiI6IjAiLCJpc3MiOiJzd3MiLCJleHAiOjE1ODE1MjMxNTcsInVzZXIiOiIxMDAiLCJpYXQiOjE1ODE1MTU3Nzd9.yAwUz7B1xOuMJzrtt6LJo0O7UNi133W15Uv_RfW3IM"
+            ]
+          },
+          "roleList": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "examples": [
+                    "0"
+                  ]
+                },
+                "name": {
+                  "type": "string",
+                  "default": "",
+                  "examples": [
+                    "System Administrator"
+                  ]
+                },
+                "orgList": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "examples": [
+                          "0"
+                        ]
+                      },
+                      "name": {
+                        "type": "string",
+                        "examples": [
+                          "*"
+                        ]
+                      },
+                      "warehouseList": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "string",
+                              "examples": [
+                                "0"
+                              ]
+                            },
+                            "name": {
+                              "type": "string",
+                              "examples": [
+                                "*"
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "_identifier": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Office supplies"
+            ]
+          },
+          "_entityName": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Product"
+            ]
+          },
+          "$ref": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Product/FF73714380904306A55B87438C1AEE32"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "FF73714380904306A55B87438C1AEE32"
+            ]
+          },
+          "client": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "23C59575B9CF467C9620760EB255B389"
+            ]
+          },
+          "client$_identifier": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "F&B International Group"
+            ]
+          },
+          "organization": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "2E60544D37534C0B89E765FE29BC0B43"
+            ]
+          },
+          "organization$_identifier": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "F&B US",
+              "Inc."
+            ]
+          },
+          "active": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "creationDate": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "2013-07-04T23:45:45-03:00"
+            ]
+          },
+          "createdBy": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "0"
+            ]
+          },
+          "createdBy$_identifier": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "System"
+            ]
+          },
+          "updated": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "2013-07-04T23:45:45-03:00"
+            ]
+          },
+          "updatedBy": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "0"
+            ]
+          },
+          "updatedBy$_identifier": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "System"
+            ]
+          },
+          "searchKey": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "OSupplies"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Office supplies"
+            ]
+          },
+          "description": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "comments": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "helpComment": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "uPCEAN": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "sKU": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "uOM": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "100"
+            ]
+          },
+          "uOM$_identifier": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Unit"
+            ]
+          },
+          "salesRepresentative": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "100"
+            ]
+          },
+          "salesRepresentative$_identifier": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Etendo"
+            ]
+          },
+          "summaryLevel": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "stocked": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "purchase": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "sale": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "billOfMaterials": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "printDetailsOnInvoice": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "printDetailsOnPickList": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "bOMVerified": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "productCategory": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "7B795AA107694B5480B1C7D59FD5AE8A"
+            ]
+          },
+          "productCategory$_identifier": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "Others"
+            ]
+          },
+          "classification": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "volume": {
+            "type": "integer",
+            "default": 0,
+            "examples": [
+              0
+            ]
+          },
+          "weight": {
+            "type": "integer",
+            "default": 0,
+            "examples": [
+              0
+            ]
+          },
+          "shelfWidth": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "shelfHeight": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "shelfDepth": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "unitsPerPallet": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "taxCategory": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "43A120C9377B4537B5D1976D9B1233D7"
+            ]
+          },
+          "taxCategory$_identifier": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "US State Sales Tax"
+            ]
+          },
+          "resource": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "discontinued": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "discontinuedBy": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "processNow": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "expenseType": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "productType": {
+            "type": "string",
+            "default": "",
+            "examples": [
+              "I"
+            ]
+          },
+          "imageURL": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "descriptionURL": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "guaranteedDays": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "versionNo": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "attributeSet": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "attributeSetValue": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "downloadURL": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "freightCategory": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "storageBin": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "image": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "businessPartner": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "printPrice": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "name2": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "costType": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "standardCost": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "minimumStock": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "enforceAttribute": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "calculated": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "processPlan": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "production": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "capacity": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "minimumLeadTime": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "planner": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "planningMethod": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "maxQuantity": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "minQuantity": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "standardQuantity": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "quantityType": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "safetyStock": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "useAttributeSetValueAs": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "isquantityvariable": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "deferredRevenue": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "revenuePlanType": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "periodNumber": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "isdeferredexpense": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "expplantype": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "periodnumberExp": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "defaultPeriod": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "defaultPeriodExpense": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "bookUsingPurchaseOrderPrice": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "uOMForWeight": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "brand": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "isGeneric": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "genericProduct": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "createVariants": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "characteristicDescription": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "updateInvariants": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "manageVariants": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "includedProductCategories": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "includedProducts": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "printDescription": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "returnable": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "overdueReturnDays": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "ispricerulebased": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "uniquePerDocument": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "relateprodcattoservice": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "relateprodtoservice": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "linkedToProduct": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "quantityRule": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "allowDeferredSell": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "deferredSellMaxDays": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "productStatus": {
+            "default": null,
+            "examples": [
+              null
+            ]
+          },
+          "modifyTax": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "relateprodcattaxtoservice": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "copyservicemodifytaxconfig": {
+            "type": "boolean",
+            "default": false,
+            "examples": [
+              false
+            ]
+          },
+          "recordTime": {
+            "type": "integer",
+            "default": 0,
+            "examples": [
+              1582210044621
+            ]
+          }
+        }
+      },
+      "Error": null,
+      "ApiResponse": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "type": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "xml": {
+          "name": "##default"
+        }
+      }
+    },
+    "requestBodies": null,
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

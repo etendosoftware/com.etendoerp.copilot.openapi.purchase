@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+  <database name="FUNCTION ETCPOPP_SIM_SEARCH">
+    <function name="ETCPOPP_SIM_SEARCH" type="VARCHAR">
+      <parameter name="table_name" type="CLOB" mode="in">
+        <default/>
+      </parameter>
+      <parameter name="search_term" type="CLOB" mode="in">
+        <default/>
+      </parameter>
+      <body><![CDATA[sql_query                 text;
+    result_id                 text;
+    result_identifier         text;
+    result_similarity_percent NUMBER;
+BEGIN
+    sql_query := '
+    SELECT ' || table_name || '_id as id , ad_column_identifier_std(''' || table_name || ''', ' || table_name || '_id),
+           (SIMILARITY(ad_column_identifier_std(''' || table_name || ''', ' || table_name || '_id), ''' ||
+                 search_term || ''') * 100)::numeric as similarity_percent
+    FROM ' || quote_ident(table_name) || '
+    order by similarity_percent desc
+    limit 1';
+
+    RAISE NOTICE 'Executing query: %', sql_query;
+
+    EXECUTE IMMEDIATE sql_query INTO result_id,result_identifier, result_similarity_percent;
+
+    RAISE NOTICE 'Result: id =% identifier=%, similarity_percent=%',result_id, result_identifier, result_similarity_percent;
+
+    RETURN result_id;
+END ETCPOPP_SIM_SEARCH
+]]></body>
+    </function>
+  </database>
