@@ -11,6 +11,7 @@ from pydantic import BaseModel, Field
 from copilot.core import utils
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils import copilot_debug
+from tools.OpenAPIEtendoTemplate import create_copilot_openapi_agent
 
 
 class OpenAPIEtendoToolInput(BaseModel):
@@ -113,7 +114,7 @@ class OpenAPIEtendoTool(ToolWrapper):
             agent_ex_arg = {
                 "handle_parsing_errors": True
             }
-            openapi_agent_executor = planner.create_openapi_agent(
+            openapi_agent_executor = create_copilot_openapi_agent(
                 reduced_openapi_spec, requests_wrapper, llm, agent_executor_kwargs=agent_ex_arg
             )
 
