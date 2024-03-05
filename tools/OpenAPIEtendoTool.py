@@ -92,10 +92,9 @@ class OpenAPIEtendoTool(ToolWrapper):
         try:
             openai_model_for_agent: Final[str] = utils.read_optional_env_var("OPENAI_MODEL_FOR_OPENAPI",
                                                                              "gpt-4-turbo-preview")
-
-            api_spec_file = ('http://localhost:8080/etendo/web/com.etendoerp.copilot.openapi.purchase/doc/'
-                             'openapi3_1_sinlogin.json')
-            server_url = 'http://localhost:8080/etendo'
+            etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
+            api_spec_file = (etendo_host + '/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
+            server_url = etendo_host+'/sws/com.etendoerp.copilot.openapi.purchase.copilotws'
 
             question_prompt = input_params.get('question_prompt')
             access_token = extra_info.get('auth').get('ETENDO_TOKEN')

@@ -23,7 +23,7 @@ public class copilotWSServlet extends BaseWebService {
   @Override
   public WSResult get(String path, Map<String, String> requestParams) throws Exception {
     Map<String, String> parameters = OBRestUtils.mapRestParameters(requestParams);
-    String searchTerm = parameters.get("searchTerm");
+    String searchTerm = requestParams.get("searchTerm");
 
     WSResult wsResult = new WSResult();
     boolean ilike = false;
