@@ -11,6 +11,7 @@ import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
+import org.openbravo.dal.core.OBContext;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.dal.service.OBQuery;
 import org.openbravo.model.common.plm.Product;
@@ -50,19 +51,20 @@ public class copilotWSServlet extends BaseWebService {
       }
 
     } else {
-      String whereOrderByClause = String.format(
-          " select p.id, p.name, etcpopp_sim_search(:tableName, p.id, :searchTerm) as similarity_percent  from Product as p where  etcpopp_sim_search(:tableName, p.id, :searchTerm) > %s order by etcpopp_sim_search(:tableName, p.id, :searchTerm) desc ",
+
+      String whereOrderByClause2 = String.format(
+          " as p where  etcpopp_sim_search(:tableName, p.id, :searchTerm) > %s order by etcpopp_sim_search(:tableName, p.id, :searchTerm) desc ",
           MIN_SIM_PERCENT);
-      Query prodlQuery = OBDal.getInstance().getSession().createQuery(whereOrderByClause);
-      prodlQuery.setParameter("tableName", Product.TABLE_NAME.toLowerCase());
-      prodlQuery.setParameter("searchTerm", searchTerm);
-      prodlQuery.setMaxResults(10);
-      ScrollableResults results = prodlQuery.scroll(ScrollMode.FORWARD_ONLY);
-      while (results.next()) {
+      OBQuery<Product> prodlQuery = OBDal.getInstance().createQuery(Product.class, whereOrderByClause2);
+      prodlQuery.setNamedParameter("tableName", Product.TABLE_NAME.toLowerCase());
+      prodlQuery.setNamedParameter("searchTerm", searchTerm);
+      prodlQuery.setMaxResult(1) ;
+      List<Product> resultList = prodlQuery.list();
+      for (Product product : resultList) {
         JSONObject productJson = new JSONObject();
-        productJson.put("id", (String) results.get(0));
-        productJson.put("name", (String) results.get(1));
-        BigDecimal percent = ((BigDecimal) results.get(2)).setScale(4, RoundingMode.HALF_UP);
+        productJson.put("id", product.getId());
+        productJson.put("name", product.getName());
+        BigDecimal percent = calcSimilarityPercent(product.getId(), searchTerm);
         productJson.put("similarity_percent", percent.toString() + "%");
         arrayResponse.put(productJson);
         break;
@@ -73,6 +75,15 @@ public class copilotWSServlet extends BaseWebService {
     wsResult.setStatus(Status.OK);
     wsResult.setData(arrayResponse);
     return wsResult;
+  }
+
+  private BigDecimal calcSimilarityPercent(String id, String searchTerm) {
+    String sql = String.format("select etcpopp_sim_search('%s','%s', '%s')", Product.TABLE_NAME, id, searchTerm);
+    Query query = OBDal.getInstance().getSession().createSQLQuery(sql);
+    ScrollableResults scroll = query.scroll(ScrollMode.FORWARD_ONLY);
+    scroll.next();
+    BigDecimal percent = (BigDecimal) scroll.get(0);
+    return percent.setScale(4, RoundingMode.HALF_UP);
   }
 
   @Override
