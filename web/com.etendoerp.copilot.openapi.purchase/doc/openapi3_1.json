@@ -85,6 +85,12 @@
                         "examples": [
                           "Producto"
                         ]
+                      },
+                      "similarity_percent": {
+                        "type": "string",
+                        "examples": [
+                          "89.4453%"
+                        ]
                       }
                     }
                   }

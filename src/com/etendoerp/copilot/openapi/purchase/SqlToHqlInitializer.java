@@ -14,7 +14,7 @@ public class SqlToHqlInitializer implements SQLFunctionRegister {
     Map<String, SQLFunction> sqlFunctions = new HashMap<>();
 
     sqlFunctions.put("etcpopp_sim_search",
-        new StandardSQLFunction("etcpopp_sim_search", StandardBasicTypes.STRING));
+        new StandardSQLFunction("etcpopp_sim_search", StandardBasicTypes.BIG_DECIMAL));
     return sqlFunctions;
   }
 }

@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
   <database name="FUNCTION ETCPOPP_SIM_SEARCH">
-    <function name="ETCPOPP_SIM_SEARCH" type="VARCHAR">
+    <function name="ETCPOPP_SIM_SEARCH" type="NUMERIC">
       <parameter name="table_name" type="VARCHAR" mode="in">
+        <default/>
+      </parameter>
+      <parameter name="record_id" type="VARCHAR" mode="in">
         <default/>
       </parameter>
       <parameter name="search_term" type="VARCHAR" mode="in">
@@ -20,11 +23,12 @@ BEGIN
     order by similarity_percent desc
     limit 1';
 
+    result_id := '';
+    result_identifier := ad_column_identifier_std(table_name, record_id);
+    result_similarity_percent := SIMILARITY(result_identifier, search_term) * 100;
 
-    EXECUTE IMMEDIATE sql_query INTO result_id,result_identifier, result_similarity_percent;
 
-
-    RETURN result_id;
+    RETURN result_similarity_percent;
 END ETCPOPP_SIM_SEARCH
 ]]></body>
     </function>
