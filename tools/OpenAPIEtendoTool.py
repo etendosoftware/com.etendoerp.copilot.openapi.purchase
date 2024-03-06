@@ -11,7 +11,6 @@ from pydantic import BaseModel, Field
 from copilot.core import utils
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils import copilot_debug
-from tools.OpenAPIEtendoTemplate import create_copilot_openapi_agent
 
 
 class OpenAPIEtendoToolInput(BaseModel):
@@ -84,6 +83,8 @@ class OpenAPIEtendoTool(ToolWrapper):
     args_schema: Type[BaseModel] = OpenAPIEtendoToolInput
 
     def run(self, input_params, *args, **kwargs):
+    
+        from tools.OpenAPIToolTemplate import create_copilot_openapi_agent
         from copilot.core.threadcontext import ThreadContext
         # read data of thread
         print("Thread ", threading.get_ident(), " TOOL:el que almacena el contexto es: ",
