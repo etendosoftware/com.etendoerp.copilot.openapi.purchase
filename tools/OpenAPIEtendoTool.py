@@ -87,8 +87,8 @@ class OpenAPIEtendoTool(ToolWrapper):
         from tools.OpenAPIToolTemplate import create_copilot_openapi_agent
         from copilot.core.threadcontext import ThreadContext
         # read data of thread
-        print("Thread ", threading.get_ident(), " TOOL:el que almacena el contexto es: ",
-              ThreadContext.identifier_data())
+        copilot_debug("Thread "+ str(threading.get_ident())+ " TOOL:el que almacena el contexto es: "+
+              str(ThreadContext.identifier_data())  )
         extra_info = ThreadContext.get_data('extra_info')
         copilot_debug("Extra info: " + str(extra_info))
         try:
