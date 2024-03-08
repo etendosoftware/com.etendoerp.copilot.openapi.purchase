@@ -58,17 +58,15 @@ public class copilotWSServlet extends BaseWebService {
       OBQuery<Product> prodlQuery = OBDal.getInstance().createQuery(Product.class, whereOrderByClause2);
       prodlQuery.setNamedParameter("tableName", Product.TABLE_NAME.toLowerCase());
       prodlQuery.setNamedParameter("searchTerm", searchTerm);
-      prodlQuery.setMaxResult(1) ;
-      List<Product> resultList = prodlQuery.list();
-      for (Product product : resultList) {
-        JSONObject productJson = new JSONObject();
-        productJson.put("id", product.getId());
-        productJson.put("name", product.getName());
-        BigDecimal percent = calcSimilarityPercent(product.getId(), searchTerm);
-        productJson.put("similarity_percent", percent.toString() + "%");
-        arrayResponse.put(productJson);
-        break;
-      }
+      prodlQuery.setMaxResult(1);
+      Product product = prodlQuery.uniqueResult();
+      JSONObject productJson = new JSONObject();
+      productJson.put("id", product.getId());
+      productJson.put("name", product.getName());
+      BigDecimal percent = calcSimilarityPercent(product.getId(), searchTerm);
+      productJson.put("similarity_percent", percent.toString() + "%");
+      arrayResponse.put(productJson);
+
     }
 
 
