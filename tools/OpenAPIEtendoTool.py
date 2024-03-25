@@ -83,22 +83,25 @@ class OpenAPIEtendoTool(ToolWrapper):
     args_schema: Type[BaseModel] = OpenAPIEtendoToolInput
 
     def run(self, input_params, *args, **kwargs):
-    
+
         from tools.OpenAPIToolTemplate import create_copilot_openapi_agent
         from copilot.core.threadcontext import ThreadContext
         # read data of thread
-        copilot_debug("Thread "+ str(threading.get_ident())+ " TOOL:el que almacena el contexto es: "+
-              str(ThreadContext.identifier_data())  )
+        copilot_debug("Thread " + str(threading.get_ident()) + " TOOL:el que almacena el contexto es: " +
+                      str(ThreadContext.identifier_data()))
         extra_info = ThreadContext.get_data('extra_info')
         copilot_debug("Extra info: " + str(extra_info))
         try:
             openai_model_for_agent: Final[str] = utils.read_optional_env_var("OPENAI_MODEL_FOR_OPENAPI",
                                                                              "gpt-4-turbo-preview")
             etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
-            api_spec_file = (etendo_host + '/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
-            server_url = etendo_host+'/sws/com.etendoerp.copilot.openapi.purchase.copilotws'
 
             question_prompt = input_params.get('question_prompt')
+            similarity_search = input_params.get('similarity_search')
+
+            api_spec_file = (etendo_host + '/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
+            server_url = etendo_host + '/sws/com.etendoerp.copilot.openapi.purchase.copilotws'
+
             access_token = extra_info.get('auth').get('ETENDO_TOKEN')
             # loads the language model we are going to use to control the agent
             llm = ChatOpenAI(temperature=0, model_name=openai_model_for_agent)
@@ -118,7 +121,7 @@ class OpenAPIEtendoTool(ToolWrapper):
             openapi_agent_executor = create_copilot_openapi_agent(
                 reduced_openapi_spec, requests_wrapper, llm, agent_executor_kwargs=agent_ex_arg
             )
-
+            
             response = openapi_agent_executor.invoke({"input": question_prompt})
 
             response = {'message': response["output"]}
