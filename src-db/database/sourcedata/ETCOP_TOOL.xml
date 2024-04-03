@@ -1,13 +1,56 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <data>
+<!--41DB506474DC48E88D8C57BFCCEA700D--><ETCOP_TOOL>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <ETCOP_TOOL_ID><![CDATA[41DB506474DC48E88D8C57BFCCEA700D]]></ETCOP_TOOL_ID>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <CREATED><![CDATA[2024-03-25 18:41:32.97]]></CREATED>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <UPDATED><![CDATA[2024-04-03 10:00:47.395]]></UPDATED>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <VALUE><![CDATA[EtendoAPITool]]></VALUE>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <NAME><![CDATA[Etendo API Tool]]></NAME>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <DESCRIPTION><![CDATA[ This Tool, based on the OpenAPI specification, allows you to get information about the API,
+    such as the url of the server, the endpoints, the parameters of each endpoint, the responses of each endpoint, etc.
+    It has one optional parameter, endpoint, which indicates of what endpoint of the API we want to get the information. It needs
+    to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint
+    GET of the path /example, we need to provide the parameter endpoint with the value "GET /example".
+    If not provided, returns the general information of the API, listing all the endpoints, with description of each endpoint,
+    but without the parameters or responses. If the endpoint is provided, returns the information of that endpoint, with the
+    parameters and responses.
+    ]]></DESCRIPTION>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <AD_MODULE_ID><![CDATA[FC09D08355EF448585E8FA0C9E8D2B85]]></AD_MODULE_ID>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <JSON_STRUCTURE><![CDATA[{
+  "type": "function",
+  "function": {
+    "name": "EtendoAPITool",
+    "description": " This Tool, based on the OpenAPI specification, allows you to get information about the API,\n    such as the url of the server, the endpoints, the parameters of each endpoint, the responses of each endpoint, etc.\n    It has one optional parameter, endpoint, which indicates of what endpoint of the API we want to get the information. It needs\n    to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint\n    GET of the path \/example, we need to provide the parameter endpoint with the value \"GET \/example\".\n    If not provided, returns the general information of the API, listing all the endpoints, with description of each endpoint,\n    but without the parameters or responses. If the endpoint is provided, returns the information of that endpoint, with the\n    parameters and responses.\n    ",
+    "parameters": {
+      "type": "object",
+      "properties": {"endpoint": {
+        "anyOf": [
+          {"type": "string"},
+          {"type": "null"}
+        ],
+        "default": null,
+        "description": "The endpoint of the API we want to get the information. If not provided, returns the general information of the API, listing all the endpoints. With description of each endpoint,but without the parameters or responses. It needs to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint GET of the path \/example, we need to provide the parameter endpoint with the value 'GET \/example'. If the endpoint is provided, returns the information of that endpoint, with the parameters and responses.",
+        "title": "Endpoint"
+      }}
+    }
+  }
+}]]></JSON_STRUCTURE>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
+<!--41DB506474DC48E88D8C57BFCCEA700D--></ETCOP_TOOL>
+
 <!--9E176066064843AFBAABDF7606BBB533--><ETCOP_TOOL>
 <!--9E176066064843AFBAABDF7606BBB533-->  <ETCOP_TOOL_ID><![CDATA[9E176066064843AFBAABDF7606BBB533]]></ETCOP_TOOL_ID>
 <!--9E176066064843AFBAABDF7606BBB533-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
 <!--9E176066064843AFBAABDF7606BBB533-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
-<!--9E176066064843AFBAABDF7606BBB533-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--9E176066064843AFBAABDF7606BBB533-->  <ISACTIVE><![CDATA[N]]></ISACTIVE>
 <!--9E176066064843AFBAABDF7606BBB533-->  <CREATED><![CDATA[2024-02-29 13:25:43.491]]></CREATED>
 <!--9E176066064843AFBAABDF7606BBB533-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--9E176066064843AFBAABDF7606BBB533-->  <UPDATED><![CDATA[2024-02-29 13:58:33.255]]></UPDATED>
+<!--9E176066064843AFBAABDF7606BBB533-->  <UPDATED><![CDATA[2024-04-02 15:23:47.919]]></UPDATED>
 <!--9E176066064843AFBAABDF7606BBB533-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--9E176066064843AFBAABDF7606BBB533-->  <VALUE><![CDATA[OpenAPIEtendoTool]]></VALUE>
 <!--9E176066064843AFBAABDF7606BBB533-->  <NAME><![CDATA[OpenAPI Tool for Etendo API]]></NAME>

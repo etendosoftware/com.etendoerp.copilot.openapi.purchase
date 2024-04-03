@@ -41,7 +41,7 @@
     "/sws/com.etendoerp.copilot.openapi.purchase.copilotws/searchBySimilarity": {
       "get": {
         "summary": "Search a entity by similarity in his name in Etendo",
-        "description": "This endpoint allow to search a entity by similarity in his name in Etendo. The entityName parameter is required and must be a valid entity name. The searchTerm parameter is required and must be a valid string.\nThe available entities for this endpoint are:\n  - Product: Products in Availables.\n  - BusinessPartner: Suppliers loaded in the system.",
+        "description": "This endpoint allow to search a entity by similarity in his name in Etendo. The entityName query parameter is required and must be a valid entity name. The searchTerm query parameter is required and must be a valid string.\nThe available entities for this endpoint are:\n  - Product: Products in Availables.\n  - BusinessPartner: Suppliers loaded in the system. \n Example of use: /sws/com.etendoerp.copilot.openapi.purchase.copilotws/searchBySimilarity?entityName=Product&searchTerm=Water%20Bottle",
         "security": [
           {
             "bearerAuth": []
@@ -1693,7 +1693,6 @@
                     "type": "string",
                     "format": "date",
                     "description": "The scheduled delivery date for the order, which should match the orderDate and accountingDate.",
-
                     "required": true
                   },
                   "accountingDate": {
@@ -1713,7 +1712,6 @@
                   "orderReference": {
                     "type": "string",
                     "description": "Reference for the order, typically  this info is provided when creating the order."
-  
                   },
                   "documentType": {
                     "type": "string",
@@ -1783,6 +1781,12 @@
                       false
                     ],
                     "default": false,
+                    "required": true
+                  },
+                  "eTCPOPPFromCopilot": {
+                    "type": "boolean",
+                    "description": "Indicates if the order is created from Copilot. Use always true.",
+                    "default": true,
                     "required": true
                   }
                 }

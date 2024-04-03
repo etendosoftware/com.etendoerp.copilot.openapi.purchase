@@ -2,10 +2,10 @@ import os
 import threading
 from typing import Dict, Final, Type, Optional
 
-from langchain_community.agent_toolkits.openapi import planner
 from langchain_community.agent_toolkits.openapi.spec import reduce_openapi_spec
 from langchain_community.chat_models import ChatOpenAI
 from langchain_community.utilities import RequestsWrapper
+from langchain_core.tools import Tool
 from pydantic import BaseModel, Field
 
 from copilot.core import utils
@@ -76,6 +76,8 @@ def check_and_set_server_url(raw_api_spec, server_url):
                      "or the servers in the openapi spec")
 
 
+
+
 class OpenAPIEtendoTool(ToolWrapper):
     name = "OpenAPIEtendoTool"
     description = (''' This Tool, based on the OpenAPI specification, allows you to interact with the ETENDO API.
@@ -94,13 +96,21 @@ class OpenAPIEtendoTool(ToolWrapper):
         try:
             openai_model_for_agent: Final[str] = utils.read_optional_env_var("OPENAI_MODEL_FOR_OPENAPI",
                                                                              "gpt-4-turbo-preview")
+            copilot_debug("OpenAPIEtendoTool: model selected ->" + str(openai_model_for_agent))
             etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
 
             question_prompt = input_params.get('question_prompt')
             similarity_search = input_params.get('similarity_search')
 
-            api_spec_file = (etendo_host + '/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
-            server_url = etendo_host + '/sws/com.etendoerp.copilot.openapi.purchase.copilotws'
+            # in local
+            api_spec_file = (
+                '/Users/futit/Workspace/etendo_core/modules/com.etendoerp.copilot.openapi.purchase/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
+            # in docker
+            # api_spec_file = ('/modules/com.etendoerp.copilot.openapi.purchase/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
+
+            # for real
+            # api_spec_file = (etendo_host + '/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
+            server_url = etendo_host  # + '/sws/com.etendoerp.copilot.openapi.purchase.copilotws'
 
             access_token = extra_info.get('auth').get('ETENDO_TOKEN')
             # loads the language model we are going to use to control the agent
