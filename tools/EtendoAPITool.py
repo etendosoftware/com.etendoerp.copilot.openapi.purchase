@@ -17,7 +17,7 @@ class EtendoAPIToolInput(BaseModel):
     # Optional parameter endpoint, it indicates of what endpoint of the API we want to get the information
     endpoint: Optional[str] = Field(None,
                                     description="The endpoint of the API we want to get the information. If not provided, returns the general information of the API, listing all the endpoints. With description of each endpoint,but without the parameters or responses. "
-                                    "It needs to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint GET of the path /example, we need to provide the parameter endpoint with the value 'GET /example'. If the endpoint is provided, returns the information of that endpoint, with the parameters and responses."
+                                                "It needs to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint GET of the path /example, we need to provide the parameter endpoint with the value 'GET /example'. If the endpoint is provided, returns the information of that endpoint, with the parameters and responses."
                                     )
 
 
@@ -109,21 +109,22 @@ class EtendoAPITool(ToolWrapper):
             openai_model_for_agent: Final[str] = utils.read_optional_env_var("OPENAI_MODEL_FOR_OPENAPI",
                                                                              "gpt-4-turbo-preview")
             copilot_debug("OpenAPIEtendoTool: model selected ->" + str(openai_model_for_agent))
-            etendo_host = "http://host.docker.internal:8080/etendo"
+            etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
 
             endpoint = input_params.get('endpoint')
-            #if the endpoint has query parameters, we need to remove them
+            # if the endpoint has query parameters, we need to remove them
             if endpoint is not None:
                 endpoint = endpoint.split('?')[0]
 
             # in local
-            #api_spec_file = (
+            # api_spec_file = (
             #   '/Users/futit/Workspace/etendo_core/modules/com.etendoerp.copilot.openapi.purchase/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
             # in docker
-            api_spec_file = ('/modules/com.etendoerp.copilot.openapi.purchase/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
+            api_spec_file = (
+                '/modules/com.etendoerp.copilot.openapi.purchase/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
 
             # for real
-            #api_spec_file = (etendo_host + '/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
+            # api_spec_file = (etendo_host + '/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
             copilot_debug("The api spec file is: " + api_spec_file)
             server_url = etendo_host  # + '/sws/com.etendoerp.copilot.openapi.purchase.copilotws'
 
@@ -166,15 +167,15 @@ class EtendoAPITool(ToolWrapper):
             servers = reduced_openapi_spec.servers
             url = ''
             if servers is not None and len(servers) > 0:
-                url = "http://host.docker.internal:8080/etendo"
-                #servers[0].get("url")
+                url = etendo_host
+                # servers[0].get("url")
 
             endpoints_general = []
             for endp in reduced_openapi_spec.endpoints:
                 endp_ = {
                     "path": endp[0]
                 }
-                endp_["description"]= endp[1]
+                endp_["description"] = endp[1]
                 endpoints_general.append(endp_)
             response: Dict = {
                 "token": access_token,
