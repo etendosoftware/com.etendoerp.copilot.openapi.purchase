@@ -4,17 +4,14 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.query.Query;
-import org.jetbrains.annotations.NotNull;
 import org.openbravo.base.structure.BaseOBObject;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.dal.service.OBQuery;
@@ -74,7 +71,7 @@ public class copilotWSServlet extends BaseWebService {
     return wsResult;
   }
 
-  @NotNull
+
   private <T extends BaseOBObject> JSONObject searchEntities(Class<T> entityClass, String whereOrderByClause2,
       String searchTerm) throws JSONException, NoSuchFieldException, IllegalAccessException {
 
