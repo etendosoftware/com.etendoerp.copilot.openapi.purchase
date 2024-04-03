@@ -112,6 +112,9 @@ class EtendoAPITool(ToolWrapper):
             etendo_host = "http://host.docker.internal:8080/etendo"
 
             endpoint = input_params.get('endpoint')
+            #if the endpoint has query parameters, we need to remove them
+            if endpoint is not None:
+                endpoint = endpoint.split('?')[0]
 
             # in local
             #api_spec_file = (

@@ -44,7 +44,7 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
       return;
     }
     OrderLine ol = (OrderLine) event.getTargetInstance();
-    if ((orderIsFromCopilot(ol.getSalesOrder()) && orderIsDraft(ol.getSalesOrder()))) {
+    if (!(orderIsFromCopilot(ol.getSalesOrder()) && orderIsDraft(ol.getSalesOrder()))) {
       return;
     }
 
