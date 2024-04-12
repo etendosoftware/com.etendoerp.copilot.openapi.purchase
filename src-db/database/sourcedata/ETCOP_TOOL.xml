@@ -7,7 +7,7 @@
 <!--41DB506474DC48E88D8C57BFCCEA700D-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--41DB506474DC48E88D8C57BFCCEA700D-->  <CREATED><![CDATA[2024-03-25 18:41:32.97]]></CREATED>
 <!--41DB506474DC48E88D8C57BFCCEA700D-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--41DB506474DC48E88D8C57BFCCEA700D-->  <UPDATED><![CDATA[2024-04-03 10:00:47.395]]></UPDATED>
+<!--41DB506474DC48E88D8C57BFCCEA700D-->  <UPDATED><![CDATA[2024-04-11 22:50:33.057]]></UPDATED>
 <!--41DB506474DC48E88D8C57BFCCEA700D-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--41DB506474DC48E88D8C57BFCCEA700D-->  <VALUE><![CDATA[EtendoAPITool]]></VALUE>
 <!--41DB506474DC48E88D8C57BFCCEA700D-->  <NAME><![CDATA[Etendo API Tool]]></NAME>
@@ -28,15 +28,26 @@
     "description": " This Tool, based on the OpenAPI specification, allows you to get information about the API,\n    such as the url of the server, the endpoints, the parameters of each endpoint, the responses of each endpoint, etc.\n    It has one optional parameter, endpoint, which indicates of what endpoint of the API we want to get the information. It needs\n    to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint\n    GET of the path \/example, we need to provide the parameter endpoint with the value \"GET \/example\".\n    If not provided, returns the general information of the API, listing all the endpoints, with description of each endpoint,\n    but without the parameters or responses. If the endpoint is provided, returns the information of that endpoint, with the\n    parameters and responses.\n    ",
     "parameters": {
       "type": "object",
-      "properties": {"endpoint": {
-        "anyOf": [
-          {"type": "string"},
-          {"type": "null"}
-        ],
-        "default": null,
-        "description": "The endpoint of the API we want to get the information. If not provided, returns the general information of the API, listing all the endpoints. With description of each endpoint,but without the parameters or responses. It needs to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint GET of the path \/example, we need to provide the parameter endpoint with the value 'GET \/example'. If the endpoint is provided, returns the information of that endpoint, with the parameters and responses.",
-        "title": "Endpoint"
-      }}
+      "properties": {
+        "tag": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "default": null,
+          "description": "The tag of the API endpoints we want to get the information. If provided, returns the information of the endpoints with that tag( filter by tag). If not provided, no filter is applied. If the endpoint is provided, the tag parameter is ignored.",
+          "title": "Tag"
+        },
+        "endpoint": {
+          "anyOf": [
+            {"type": "string"},
+            {"type": "null"}
+          ],
+          "default": null,
+          "description": "The endpoint of the API we want to get the information. If not provided, returns the general information of the API, listing all the endpoints. With description of each endpoint,but without the parameters or responses. It needs to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint GET of the path \/example, we need to provide the parameter endpoint with the value 'GET \/example'. If the endpoint is provided, returns the information of that endpoint, with the parameters and responses.",
+          "title": "Endpoint"
+        }
+      }
     }
   }
 }]]></JSON_STRUCTURE>

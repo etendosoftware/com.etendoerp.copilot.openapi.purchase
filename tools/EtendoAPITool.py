@@ -14,7 +14,9 @@ from copilot.core.utils import copilot_debug
 
 
 class EtendoAPIToolInput(BaseModel):
-    # Optional parameter endpoint, it indicates of what endpoint of the API we want to get the information
+    tag: Optional[str] = Field(None,
+                               description="The tag of the API endpoints we want to get the information. If provided, returns the information of the endpoints with that tag( filter by tag). If not provided, no filter is applied. If the endpoint is provided, the tag parameter is ignored."
+                               )
     endpoint: Optional[str] = Field(None,
                                     description="The endpoint of the API we want to get the information. If not provided, returns the general information of the API, listing all the endpoints. With description of each endpoint,but without the parameters or responses. "
                                                 "It needs to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint GET of the path /example, we need to provide the parameter endpoint with the value 'GET /example'. If the endpoint is provided, returns the information of that endpoint, with the parameters and responses."
@@ -112,6 +114,7 @@ class EtendoAPITool(ToolWrapper):
             etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
 
             endpoint = input_params.get('endpoint')
+            tag = input_params.get('tag')
             # if the endpoint has query parameters, we need to remove them
             if endpoint is not None:
                 endpoint = endpoint.split('?')[0]
@@ -171,12 +174,15 @@ class EtendoAPITool(ToolWrapper):
                 # servers[0].get("url")
 
             endpoints_general = []
+            if (tag is not None):  # read the paths with the tag
+                paths_with_tag = self.search_paths_with_tag(raw_api_spec, tag)
             for endp in reduced_openapi_spec.endpoints:
-                endp_ = {
-                    "path": endp[0]
-                }
-                endp_["description"] = endp[1]
-                endpoints_general.append(endp_)
+                if tag is None or endp[0] in paths_with_tag:
+                    endp_ = {
+                        "path": endp[0],
+                        "description": endp[1]
+                    }
+                    endpoints_general.append(endp_)
             response: Dict = {
                 "token": access_token,
                 "url": url,
@@ -189,3 +195,13 @@ class EtendoAPITool(ToolWrapper):
         except Exception as e:
             response = {'error': str(e)}
             return response
+
+    def search_paths_with_tag(self, raw_api_spec, tag):
+        paths_with_tag = []
+        paths = raw_api_spec["paths"]
+        for path_raw, data in paths.items():
+            print(str(path_raw) + " -> " + str(data))
+            for method, data_method in data.items():
+                if tag in data_method.get('tags'):
+                    paths_with_tag.append(method.upper() + " " + path_raw)
+        return paths_with_tag

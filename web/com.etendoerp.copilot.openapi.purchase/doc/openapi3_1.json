@@ -16,20 +16,8 @@
   ],
   "tags": [
     {
-      "name": "Product",
-      "description": "Everything about the products",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "http://swagger.io"
-      }
-    },
-    {
-      "name": "businessPartner",
-      "description": "Everything about the business Partners",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "http://swagger.io"
-      }
+      "name": "Purchase",
+      "description": "Endpoints related to purchase orders and related entities"
     }
   ],
   "security": [
@@ -48,7 +36,7 @@
           }
         ],
         "tags": [
-          "Search"
+          "Purchase"
         ],
         "parameters": [
           {
@@ -152,7 +140,7 @@
           }
         ],
         "tags": [
-          "Dal"
+          "Purchase"
         ],
         "parameters": [
           {
@@ -997,7 +985,7 @@
           }
         ],
         "tags": [
-          "Dal"
+          "Purchase"
         ],
         "parameters": [
           {
@@ -1542,7 +1530,7 @@
           }
         ],
         "tags": [
-          "Dal"
+          "Purchase"
         ],
         "parameters": [
           {
@@ -1674,7 +1662,7 @@
           }
         ],
         "tags": [
-          "Dal"
+          "Purchase"
         ],
         "requestBody": {
           "required": true,
@@ -1831,7 +1819,7 @@
           }
         ],
         "tags": [
-          "Dal"
+          "Purchase"
         ],
         "parameters": [
           {
@@ -1963,7 +1951,7 @@
           }
         ],
         "tags": [
-          "Dal"
+          "Purchase"
         ],
         "requestBody": {
           "description": "Information of the order line for being inserted",
