@@ -200,7 +200,6 @@ class EtendoAPITool(ToolWrapper):
         paths_with_tag = []
         paths = raw_api_spec["paths"]
         for path_raw, data in paths.items():
-            print(str(path_raw) + " -> " + str(data))
             for method, data_method in data.items():
                 if tag in data_method.get('tags'):
                     paths_with_tag.append(method.upper() + " " + path_raw)

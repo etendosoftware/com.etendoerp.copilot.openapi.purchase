@@ -1671,111 +1671,116 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "orderDate": {
-                    "type": "string",
-                    "format": "date",
-                    "description": "The date when the order is placed. This value must be provided by the user, and it should be the same as scheduledDeliveryDate and accountingDate.",
-                    "required": true
-                  },
-                  "scheduledDeliveryDate": {
-                    "type": "string",
-                    "format": "date",
-                    "description": "The scheduled delivery date for the order, which should match the orderDate and accountingDate.",
-                    "required": true
-                  },
-                  "accountingDate": {
-                    "type": "string",
-                    "format": "date",
-                    "description": "The accounting date for the order, which should be identical to orderDate and scheduledDeliveryDate.",
-                    "required": true
-                  },
-                  "businessPartner": {
-                    "type": "string",
-                    "description": "The ID of the supplier.",
-                    "examples": [
-                      "858B90C7AF0A4533863EEC65437382BF"
-                    ],
-                    "required": true
-                  },
-                  "orderReference": {
-                    "type": "string",
-                    "description": "Reference for the order, typically  this info is provided when creating the order."
-                  },
-                  "documentType": {
-                    "type": "string",
-                    "description": "The type of document for the order. Use 'AB22CE8FFA5E4AF29F2AC90FCDD400D8' for this order.",
-                    "examples": [
-                      "AB22CE8FFA5E4AF29F2AC90FCDD400D8"
-                    ],
-                    "default": "AB22CE8FFA5E4AF29F2AC90FCDD400D8",
-                    "required": true
-                  },
-                  "transactionDocument": {
-                    "type": "string",
-                    "description": "Transaction document for the order. Utilize 'AB22CE8FFA5E4AF29F2AC90FCDD400D8' for this transaction.",
-                    "examples": [
-                      "AB22CE8FFA5E4AF29F2AC90FCDD400D8"
-                    ],
-                    "default": "AB22CE8FFA5E4AF29F2AC90FCDD400D8",
-                    "required": true
-                  },
-                  "partnerAddress": {
-                    "type": "string",
-                    "description": "Supplier's address. For now, use '1F38687D74244B369F0B16B3858CD256'.",
-                    "examples": [
-                      "1F38687D74244B369F0B16B3858CD256"
-                    ],
-                    "default": "1F38687D74244B369F0B16B3858CD256",
-                    "required": true
-                  },
-                  "currency": {
-                    "type": "string",
-                    "description": "Currency ID for currency in which the order is made. If reading from BusinessPartner, the currency can be obtained from the same, property: 'currency'.",
-                    "examples": [
-                      "102"
-                    ],
-                    "required": true
-                  },
-                  "paymentTerms": {
-                    "type": "string",
-                    "description": "Payment terms from the supplier. Read this value from the BusinessPartner, property: 'pOPaymentTerms'.",
-                    "examples": [
-                      "66BA1164A7394344BB9CD1A6ECEED05D"
-                    ],
-                    "required": true
-                  },
-                  "warehouse": {
-                    "type": "string",
-                    "description": "Warehouse where the order will be stored. Use 'B2D40D8A5D644DD89E329DC297309055' for this order.",
-                    "examples": [
-                      "B2D40D8A5D644DD89E329DC297309055"
-                    ],
-                    "default": "B2D40D8A5D644DD89E329DC297309055",
-                    "required": true
-                  },
-                  "priceList": {
-                    "type": "string",
-                    "description": "Price list from the supplier. Can be obtained from the BusinessPartner, property: 'purchasePricelist'.",
-                    "examples": [
-                      "91AE1E96A30844209CD996917E193BE1"
-                    ],
-                    "default": "supplier's purchase price list",
-                    "required": true
-                  },
-                  "salesTransaction": {
-                    "type": "boolean",
-                    "description": "Indicates if the order is a sales transaction. In this case, it is not. Always false.",
-                    "examples": [
-                      false
-                    ],
-                    "default": false,
-                    "required": true
-                  },
-                  "eTCPOPPFromCopilot": {
-                    "type": "boolean",
-                    "description": "Indicates if the order is created from Copilot. Use always true.",
-                    "default": true,
-                    "required": true
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "orderDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The date when the order is placed. This value must be provided by the user, and it should be the same as scheduledDeliveryDate and accountingDate.",
+                        "required": true
+                      },
+                      "scheduledDeliveryDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The scheduled delivery date for the order, which should match the orderDate and accountingDate.",
+                        "required": true
+                      },
+                      "accountingDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The accounting date for the order, which should be identical to orderDate and scheduledDeliveryDate.",
+                        "required": true
+                      },
+                      "businessPartner": {
+                        "type": "string",
+                        "description": "The ID of the supplier.",
+                        "examples": [
+                          "858B90C7AF0A4533863EEC65437382BF"
+                        ],
+                        "required": true
+                      },
+                      "orderReference": {
+                        "type": "string",
+                        "description": "Reference for the order, typically  this info is provided when creating the order."
+                      },
+                      "documentType": {
+                        "type": "string",
+                        "description": "The type of document for the order. Use 'AB22CE8FFA5E4AF29F2AC90FCDD400D8' for this order.",
+                        "examples": [
+                          "AB22CE8FFA5E4AF29F2AC90FCDD400D8"
+                        ],
+                        "default": "AB22CE8FFA5E4AF29F2AC90FCDD400D8",
+                        "required": true
+                      },
+                      "transactionDocument": {
+                        "type": "string",
+                        "description": "Transaction document for the order. Utilize 'AB22CE8FFA5E4AF29F2AC90FCDD400D8' for this transaction.",
+                        "examples": [
+                          "AB22CE8FFA5E4AF29F2AC90FCDD400D8"
+                        ],
+                        "default": "AB22CE8FFA5E4AF29F2AC90FCDD400D8",
+                        "required": true
+                      },
+                      "partnerAddress": {
+                        "type": "string",
+                        "description": "Supplier's address. For now, use '1F38687D74244B369F0B16B3858CD256'.",
+                        "examples": [
+                          "1F38687D74244B369F0B16B3858CD256"
+                        ],
+                        "default": "1F38687D74244B369F0B16B3858CD256",
+                        "required": true
+                      },
+                      "currency": {
+                        "type": "string",
+                        "description": "Currency ID for currency in which the order is made. If reading from BusinessPartner, the currency can be obtained from the same, property: 'currency'.",
+                        "examples": [
+                          "102"
+                        ],
+                        "required": true
+                      },
+                      "paymentTerms": {
+                        "type": "string",
+                        "description": "Payment terms from the supplier. Read this value from the BusinessPartner, property: 'pOPaymentTerms'.",
+                        "examples": [
+                          "66BA1164A7394344BB9CD1A6ECEED05D"
+                        ],
+                        "required": true
+                      },
+                      "warehouse": {
+                        "type": "string",
+                        "description": "Warehouse where the order will be stored. Use 'B2D40D8A5D644DD89E329DC297309055' for this order.",
+                        "examples": [
+                          "B2D40D8A5D644DD89E329DC297309055"
+                        ],
+                        "default": "B2D40D8A5D644DD89E329DC297309055",
+                        "required": true
+                      },
+                      "priceList": {
+                        "type": "string",
+                        "description": "Price list from the supplier. Can be obtained from the BusinessPartner, property: 'purchasePricelist'.",
+                        "examples": [
+                          "91AE1E96A30844209CD996917E193BE1"
+                        ],
+                        "default": "supplier's purchase price list",
+                        "required": true
+                      },
+                      "salesTransaction": {
+                        "type": "boolean",
+                        "description": "Indicates if the order is a sales transaction. In this case, it is not. Always false.",
+                        "examples": [
+                          false
+                        ],
+                        "default": false,
+                        "required": true
+                      },
+                      "eTCPOPPFromCopilot": {
+                        "type": "boolean",
+                        "description": "Indicates if the order is created from Copilot. Use always true.",
+                        "default": true,
+                        "required": true
+                      }
+                    }
                   }
                 }
               }
@@ -1960,85 +1965,90 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "organization": {
-                    "type": "string",
-                    "examples": [
-                      "E443A31992CB4635AFCAEABE7183CE85"
-                    ],
-                    "required": true
-                  },
-                  "salesOrder": {
-                    "type": "string",
-                    "description": "The ID of the order header.",
-                    "examples": [
-                      "871FE88083AA4C46B867C3CBE84FC7AF"
-                    ],
-                    "required": true
-                  },
-                  "lineNo": {
-                    "type": "integer",
-                    "description": "The line number of the order. Increases by 10",
-                    "examples": [
-                      10
-                    ],
-                    "required": true
-                  },
-                  "uOM": {
-                    "type": "string",
-                    "description": "Unit of measure for the order. Use '100' for this order.",
-                    "examples": [
-                      "100"
-                    ],
-                    "required": true
-                  },
-                  "product": {
-                    "type": "string",
-                    "description": "The ID of the product.",
-                    "examples": [
-                      "20FBF069AC804DE9BF16670000B9562E"
-                    ],
-                    "required": true
-                  },
-                  "orderDate": {
-                    "type": "string",
-                    "format": "date",
-                    "description": "The date when the order is placed. This value must be provided by the user, it should be the same as orderDate of the order header",
-                    "examples": [
-                      "2024-03-01"
-                    ],
-                    "required": true
-                  },
-                  "warehouse": {
-                    "type": "string",
-                    "description": "Warehouse where the order will be stored. Use  B2D40D8A5D644DD89E329DC297309055",
-                    "examples": [
-                      "B2D40D8A5D644DD89E329DC297309055"
-                    ],
-                    "required": true
-                  },
-                  "currency": {
-                    "type": "string",
-                    "description": "Currency ID for currency in which the order is made. This must be the same as the currency of the order header.",
-                    "examples": [
-                      "102"
-                    ],
-                    "required": true
-                  },
-                  "tax": {
-                    "type": "string",
-                    "description": "Tax ID for the order. Use '18A499249FF74A68B79510F0AD341141' for this order.",
-                    "examples": [
-                      "18A499249FF74A68B79510F0AD341141"
-                    ],
-                    "required": true
-                  },
-                  "orderedQuantity": {
-                    "type": "integer",
-                    "description": "The quantity of the product ordered.",
-                    "examples": [
-                      150
-                    ],
-                    "required": true
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "organization": {
+                        "type": "string",
+                        "examples": [
+                          "E443A31992CB4635AFCAEABE7183CE85"
+                        ],
+                        "required": true
+                      },
+                      "salesOrder": {
+                        "type": "string",
+                        "description": "The ID of the order header.",
+                        "examples": [
+                          "871FE88083AA4C46B867C3CBE84FC7AF"
+                        ],
+                        "required": true
+                      },
+                      "lineNo": {
+                        "type": "integer",
+                        "description": "The line number of the order. Increases by 10",
+                        "examples": [
+                          10
+                        ],
+                        "required": true
+                      },
+                      "uOM": {
+                        "type": "string",
+                        "description": "Unit of measure for the order. Use '100' for this order.",
+                        "examples": [
+                          "100"
+                        ],
+                        "required": true
+                      },
+                      "product": {
+                        "type": "string",
+                        "description": "The ID of the product.",
+                        "examples": [
+                          "20FBF069AC804DE9BF16670000B9562E"
+                        ],
+                        "required": true
+                      },
+                      "orderDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The date when the order is placed. This value must be provided by the user, it should be the same as orderDate of the order header",
+                        "examples": [
+                          "2024-03-01"
+                        ],
+                        "required": true
+                      },
+                      "warehouse": {
+                        "type": "string",
+                        "description": "Warehouse where the order will be stored. Use  B2D40D8A5D644DD89E329DC297309055",
+                        "examples": [
+                          "B2D40D8A5D644DD89E329DC297309055"
+                        ],
+                        "required": true
+                      },
+                      "currency": {
+                        "type": "string",
+                        "description": "Currency ID for currency in which the order is made. This must be the same as the currency of the order header.",
+                        "examples": [
+                          "102"
+                        ],
+                        "required": true
+                      },
+                      "tax": {
+                        "type": "string",
+                        "description": "Tax ID for the order. Use '18A499249FF74A68B79510F0AD341141' for this order.",
+                        "examples": [
+                          "18A499249FF74A68B79510F0AD341141"
+                        ],
+                        "required": true
+                      },
+                      "orderedQuantity": {
+                        "type": "integer",
+                        "description": "The quantity of the product ordered.",
+                        "examples": [
+                          150
+                        ],
+                        "required": true
+                      }
+                    }
                   }
                 }
               }
