@@ -1739,6 +1739,13 @@
                         ],
                         "required": true
                       },
+                      "paymentMethod": {
+                        "type": "string",
+                        "description": "Payment method preferred from the supplier. Read this value from the BusinessPartner, property: 'pOPaymentMethod'. This property is not mandatory, but it is very useful to have it. ",
+                        "examples": [
+                          "66BA1164A7394344BB9CD1A6ECEED05D"
+                        ]
+                      },
                       "paymentTerms": {
                         "type": "string",
                         "description": "Payment terms from the supplier. Read this value from the BusinessPartner, property: 'pOPaymentTerms'.",

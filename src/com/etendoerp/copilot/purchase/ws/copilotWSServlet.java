@@ -15,6 +15,7 @@ import org.hibernate.query.Query;
 import org.openbravo.base.structure.BaseOBObject;
 import org.openbravo.dal.service.OBDal;
 import org.openbravo.dal.service.OBQuery;
+import org.openbravo.erpCommon.utility.OBMessageUtils;
 import org.openbravo.model.common.businesspartner.BusinessPartner;
 import org.openbravo.model.common.plm.Product;
 import org.openbravo.model.financialmgmt.payment.PaymentTerm;
@@ -46,9 +47,14 @@ public class copilotWSServlet extends BaseWebService {
       wsResult.setStatus(Status.OK);
       JSONObject errorJson = new JSONObject();
       errorJson.put("status", "error");
-      errorJson.put("message",
-          "entityName parameter is required and must be one of the following:" + entityNameClassMap.keySet().stream().reduce(
-              "", (a, b) -> a + ", " + b));
+      String entityList = entityNameClassMap.keySet().stream().reduce(
+          "", (a, b) -> a + ", " + b);
+      String errmsg = String.format(
+          OBMessageUtils.messageBD("ETCPOPP_SearchEntityNotSupported"),
+          entityList);
+
+      errorJson.put("message", errmsg);
+
       wsResult.setData(errorJson);
       return wsResult;
     }
