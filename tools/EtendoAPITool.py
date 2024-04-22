@@ -86,6 +86,16 @@ def check_and_set_server_url(raw_api_spec, server_url):
                      "or the servers in the openapi spec")
 
 
+def search_paths_with_tag(raw_api_spec, tag):
+    paths_with_tag = []
+    paths = raw_api_spec["paths"]
+    for path_raw, data in paths.items():
+        for method, data_method in data.items():
+            if tag in data_method.get('tags'):
+                paths_with_tag.append(method.upper() + " " + path_raw)
+    return paths_with_tag
+
+
 class EtendoAPITool(ToolWrapper):
     name = "EtendoAPITool"
     description = (''' This Tool, based on the OpenAPI specification, allows you to get information about the API,
@@ -120,11 +130,9 @@ class EtendoAPITool(ToolWrapper):
                 endpoint = endpoint.split('?')[0]
 
             # in local
-            # api_spec_file = (
-            #   '/Users/futit/Workspace/etendo_core/modules/com.etendoerp.copilot.openapi.purchase/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
-            # in docker
-            api_spec_file = (
-                '/modules/com.etendoerp.copilot.openapi.purchase/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
+            api_spec_file = os.getenv('COPILOT_PURCHASE_API_SPEC_FILE',
+                                           '/modules/com.etendoerp.copilot.openapi.purchase/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
+
 
             # for real
             # api_spec_file = (etendo_host + '/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
@@ -137,29 +145,28 @@ class EtendoAPITool(ToolWrapper):
             # load the openapi specification, can be a local file or a remote url
             # check api_spec_file is a file or a url
             headers = _get_headers(access_token)
+            copilot_debug("Headers: " + str(headers))
 
             raw_api_spec = read_raw_api_spec(api_spec_file)
             requests_wrapper = RequestsWrapper(headers=headers)
-
+            copilot_debug("Requests wrapper created")
             check_and_set_server_url(raw_api_spec, server_url)
+            copilot_debug("Server url checked")
             reduced_openapi_spec = reduce_openapi_spec(raw_api_spec, dereference=False)
-            agent_ex_arg = {
-                "handle_parsing_errors": True
-            }
+            copilot_debug("OpenAPI spec reduced")
 
-            # import json
-            # json.dumps(reduced_openapi_spec, indent=4, sort_keys=True)
-            if (endpoint is not None):
+            if endpoint is not None:
+                copilot_debug("Endpoint provided")
                 for endp in reduced_openapi_spec.endpoints:
                     if endp[0] == endpoint:
                         path = endp[0]
                         info = endp[2]
-                        reqBody = info.get("requestBody")
+                        req_body = info.get("requestBody")
                         responses = info.get('responses')
                         endpoint_data = {
                             "path": path,
                             "description": info.get('description'),
-                            "requestBody": reqBody,
+                            "requestBody": req_body,
                             "responses": responses
                         }
                         return {'message': endpoint_data}
@@ -170,12 +177,15 @@ class EtendoAPITool(ToolWrapper):
             servers = reduced_openapi_spec.servers
             url = ''
             if servers is not None and len(servers) > 0:
+                copilot_debug("Servers found")
                 url = etendo_host
-                # servers[0].get("url")
+                copilot_debug("Server url: " + url)
 
             endpoints_general = []
-            if (tag is not None):  # read the paths with the tag
-                paths_with_tag = self.search_paths_with_tag(raw_api_spec, tag)
+            paths_with_tag = []
+            if tag is not None:  # read the paths with the tag
+                paths_with_tag = search_paths_with_tag(raw_api_spec, tag)
+                copilot_debug("Paths with tag: " + str(paths_with_tag))
             for endp in reduced_openapi_spec.endpoints:
                 if tag is None or endp[0] in paths_with_tag:
                     endp_ = {
@@ -195,12 +205,3 @@ class EtendoAPITool(ToolWrapper):
         except Exception as e:
             response = {'error': str(e)}
             return response
-
-    def search_paths_with_tag(self, raw_api_spec, tag):
-        paths_with_tag = []
-        paths = raw_api_spec["paths"]
-        for path_raw, data in paths.items():
-            for method, data_method in data.items():
-                if tag in data_method.get('tags'):
-                    paths_with_tag.append(method.upper() + " " + path_raw)
-        return paths_with_tag
