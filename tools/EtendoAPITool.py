@@ -164,6 +164,9 @@ class EtendoAPITool(ToolWrapper):
             copilot_debug("The api spec file is: " + api_spec_file)
             server_url = etendo_host  # + '/sws/com.etendoerp.copilot.openapi.purchase.copilotws'
 
+            if extra_info is None or extra_info.get('auth') is None or extra_info.get('auth').get('ETEND_TOKEN') is None:
+                copilot_debug("No token found")
+                return {'error': "No token found in context. Check the Secure Web Services configuration in 'Client' window as 'System administrator'"}
             access_token = extra_info.get('auth').get('ETENDO_TOKEN')
             # loads the language model we are going to use to control the agent
 
