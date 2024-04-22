@@ -96,6 +96,31 @@ def search_paths_with_tag(raw_api_spec, tag):
     return paths_with_tag
 
 
+def verify_path(path):
+    # Check if the path is absolute
+    copilot_debug(f"Verifying path: {path}")
+    if os.path.isabs(path):
+        base_path = '/'
+    else:
+        base_path = os.getcwd()
+
+    # Split the path into parts
+    parts = path.strip('/').split('/')
+
+    # Iterate over each part of the path
+    for part in parts:
+        base_path = os.path.join(base_path, part)
+
+        # Check if the current part of the path exists
+        if not os.path.exists(base_path):
+            copilot_debug(f"Path does not exist: {base_path}")
+            return False
+
+    copilot_debug(f"All components exist for the path: {path}")
+    return True
+
+
+
 class EtendoAPITool(ToolWrapper):
     name = "EtendoAPITool"
     description = (''' This Tool, based on the OpenAPI specification, allows you to get information about the API,
@@ -133,7 +158,7 @@ class EtendoAPITool(ToolWrapper):
             api_spec_file = os.getenv('COPILOT_PURCHASE_API_SPEC_FILE',
                                            '/modules/com.etendoerp.copilot.openapi.purchase/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
 
-
+            verify_path(api_spec_file)
             # for real
             # api_spec_file = (etendo_host + '/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json')
             copilot_debug("The api spec file is: " + api_spec_file)
