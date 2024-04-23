@@ -176,7 +176,6 @@ class EtendoAPITool(ToolWrapper):
             copilot_debug("Headers: " + str(headers))
 
             raw_api_spec = read_raw_api_spec(api_spec_file)
-            requests_wrapper = RequestsWrapper(headers=headers)
             copilot_debug("Requests wrapper created")
             check_and_set_server_url(raw_api_spec, server_url)
             copilot_debug("Server url checked")
