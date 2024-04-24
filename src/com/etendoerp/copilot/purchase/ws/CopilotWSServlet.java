@@ -27,7 +27,7 @@ import com.smf.securewebservices.utils.WSResult.Status;
 /**
  * @author androettop
  */
-public class copilotWSServlet extends BaseWebService {
+public class CopilotWSServlet extends BaseWebService {
 
   public static final int MIN_SIM_PERCENT = 30;
 

@@ -50,8 +50,10 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
    * It sets the prices and discount for the order line.
    * Finally, it sets the tax for the order line and logs the insertion of the order line.
    *
-   * @param event The EntityNewEvent object representing the event of creating a new order line.
-   * @throws OBException If there is an error retrieving the product price or setting the prices, discount, or tax for the order line.
+   * @param event
+   *     The EntityNewEvent object representing the event of creating a new order line.
+   * @throws OBException
+   *     If there is an error retrieving the product price or setting the prices, discount, or tax for the order line.
    */
   private void onInsert(@Observes EntityNewEvent event) {
     if (!isValidEvent(event)) {
