@@ -5,13 +5,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Properties;
 
 import javax.enterprise.event.Observes;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openbravo.base.exception.OBException;
 import org.openbravo.base.model.Entity;
 import org.openbravo.base.model.ModelProvider;
 import org.openbravo.base.model.Property;
@@ -42,6 +42,17 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
 
   private static final Logger log = LogManager.getLogger(SetTaxAndPriceEventHandler.class);
 
+  /**
+   * This method handles the insertion of a new order line.
+   * It first checks if the event is valid and if the order is from Copilot and in draft status.
+   * Then, it retrieves the product price based on the order date, price list, and product.
+   * It calculates the actual price based on whether the price list includes tax and whether the price adjustment is cancelled.
+   * It sets the prices and discount for the order line.
+   * Finally, it sets the tax for the order line and logs the insertion of the order line.
+   *
+   * @param event The EntityNewEvent object representing the event of creating a new order line.
+   * @throws OBException If there is an error retrieving the product price or setting the prices, discount, or tax for the order line.
+   */
   private void onInsert(@Observes EntityNewEvent event) {
     if (!isValidEvent(event)) {
       return;
@@ -55,13 +66,13 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
     Property propertyCancelPriceAd = entity.getProperty(OrderLine.PROPERTY_CANCELPRICEADJUSTMENT);
     Order order = ol.getSalesOrder();
 
-    BigDecimal priceActual = BigDecimal.ZERO;
-    String productProdId = getProductPrice(order.getOrderDate(), order.getPriceList(), ol.getProduct());
+    BigDecimal priceActual;
+    String productPriceId = getProductPrice(order.getOrderDate(), order.getPriceList(), ol.getProduct());
     BigDecimal priceList = BigDecimal.ZERO;
     BigDecimal priceStd = BigDecimal.ZERO;
     BigDecimal priceLimit = BigDecimal.ZERO;
-    if (productProdId != null) {
-      ProductPrice productPrice = OBDal.getInstance().get(ProductPrice.class, productProdId);
+    if (productPriceId != null) {
+      ProductPrice productPrice = OBDal.getInstance().get(ProductPrice.class, productPriceId);
 
       priceList = productPrice.getListPrice();
       priceStd = productPrice.getStandardPrice();
@@ -92,6 +103,55 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
 
 
     // Prices
+    setPrices(event, isTaxIncludedPriceList, entity, priceActual, grossPriceList, grossBaseUnitPrice, netPriceList,
+        priceLimit, priceStd);
+
+
+    // Discount
+    BigDecimal calculatedDiscount = BigDecimal.ZERO;
+    BigDecimal price = isTaxIncludedPriceList ? grossPriceList : netPriceList;
+    if (!BigDecimal.ZERO.equals(price)) {
+      int precision = order.getCurrency().getPricePrecision().intValue();
+      calculatedDiscount = price.subtract(priceActual)
+          .multiply(BigDecimal.valueOf(100))
+          .divide(price, precision)
+          .setScale(0, RoundingMode.HALF_UP);
+    }
+    Property propertyDiscount = entity.getProperty(OrderLine.PROPERTY_DISCOUNT);
+    if (calculatedDiscount.compareTo((BigDecimal) event.getCurrentState(propertyDiscount)) != 0) {
+      event.setCurrentState(propertyDiscount, calculatedDiscount);
+    }
+    taxSearchAndSet(event, entity, order, product);
+    log.debug("OrderLine inserted: " + ol.getId());
+
+  }
+
+  /**
+   * This method sets the prices for an order line during its creation.
+   * It checks if the price list includes tax and sets the prices accordingly.
+   *
+   * @param event
+   *     The EntityNewEvent object representing the event of creating a new order line.
+   * @param isTaxIncludedPriceList
+   *     A boolean indicating whether the price list includes tax.
+   * @param entity
+   *     The Entity object representing the order line being created.
+   * @param priceActual
+   *     The actual price of the product.
+   * @param grossPriceList
+   *     The gross price from the price list.
+   * @param grossBaseUnitPrice
+   *     The gross base unit price of the product.
+   * @param netPriceList
+   *     The net price from the price list.
+   * @param priceLimit
+   *     The price limit for the product.
+   * @param priceStd
+   *     The standard price for the product.
+   */
+  private void setPrices(EntityNewEvent event, boolean isTaxIncludedPriceList, Entity entity, BigDecimal priceActual,
+      BigDecimal grossPriceList, BigDecimal grossBaseUnitPrice, BigDecimal netPriceList, BigDecimal priceLimit,
+      BigDecimal priceStd) {
     if (isTaxIncludedPriceList) {
       //Gross Unit Price
       Property propertyGrossUnitPrice = entity.getProperty(OrderLine.PROPERTY_GROSSUNITPRICE);
@@ -119,28 +179,24 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
       event.setCurrentState(propertyPriceActual, priceActual);
 
     }
-
-
-    // Discount
-    BigDecimal calculatedDiscount = BigDecimal.ZERO;
-    BigDecimal price = isTaxIncludedPriceList ? grossPriceList : netPriceList;
-    if (!BigDecimal.ZERO.equals(price)) {
-      int precision = order.getCurrency().getPricePrecision().intValue();
-      calculatedDiscount = price.subtract(priceActual)
-          .multiply(BigDecimal.valueOf(100))
-          .divide(price, precision)
-          .setScale(0, RoundingMode.HALF_UP);
-    }
-    Property PropertyDiscount = entity.getProperty(OrderLine.PROPERTY_DISCOUNT);
-    if (calculatedDiscount.compareTo((BigDecimal) event.getCurrentState(PropertyDiscount)) != 0) {
-      event.setCurrentState(PropertyDiscount, calculatedDiscount);
-    }
-    taxSearchAndSet(event, entity, order, product);
-
-    log.debug("OrderLine inserted: " + ol.getId());
-
   }
 
+  /**
+   * This method sets the tax for an order line during its creation.
+   * It retrieves the tax ID based on the product, order date, organization, warehouse, partner address, project, and sales transaction status.
+   * Then, it sets the tax for the order line.
+   *
+   * @param event
+   *     The EntityNewEvent object representing the event of creating a new order line.
+   * @param entity
+   *     The Entity object representing the order line being created.
+   * @param order
+   *     The Order object representing the order that the order line belongs to.
+   * @param product
+   *     The Product object representing the product that the order line is for.
+   * @throws OBException
+   *     If there is an error retrieving the tax ID or setting the tax for the order line.
+   */
   private void taxSearchAndSet(EntityNewEvent event, Entity entity, Order order, Product product) {
     Property propertyTax = entity.getProperty(OrderLine.PROPERTY_TAX);
     //formate order.getOrderDate to string year-month-day. Dont use FormatUtilities
@@ -156,38 +212,69 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
           order.getPartnerAddress().getId(),
           order.getPartnerAddress().getId(), project != null ? project.getId() : null, order.isSalesTransaction());
       TaxRate tax = OBDal.getInstance().get(TaxRate.class, strCTaxID);
+
       log.info("TaxRate: " + tax.getName());
       event.setCurrentState(propertyTax, tax);
     } catch (Exception e) {
-      log.error("OrderLin error: " + e.getMessage());
-
+      log.error("OrderLine error: " + e.getMessage());
+      throw new OBException(e);
     }
   }
 
+  /**
+   * This method checks if the provided sales order is in draft status.
+   * It compares the document status of the sales order with the string "DR" (representing draft status) in a case-insensitive manner.
+   *
+   * @param salesOrder
+   *     The Order object representing the sales order to be checked.
+   * @return A boolean indicating whether the sales order is in draft status. Returns true if the sales order is in draft status, false otherwise.
+   */
   private boolean orderIsDraft(Order salesOrder) {
     return StringUtils.equalsIgnoreCase(salesOrder.getDocumentStatus(), "DR");
   }
 
+  /**
+   * This method checks if the provided sales order is in draft status.
+   * It compares the document status of the sales order with the string "DR" (representing draft status) in a case-insensitive manner.
+   *
+   * @param salesOrder
+   *     The Order object representing the sales order to be checked.
+   * @return A boolean indicating whether the sales order is in draft status. Returns true if the sales order is in draft status, false otherwise.
+   */
   private boolean orderIsFromCopilot(Order salesOrder) {
     return salesOrder.isETCPOPPFromCopilot();
   }
 
-
+  /**
+   * This method retrieves the product price ID from the PricingProductPrice table.
+   * It constructs an HQL query to select the product price ID based on the product ID, date, and price list ID.
+   * The method sets the admin mode to true before executing the query and restores the previous mode after execution.
+   *
+   * @param date
+   *     The Date object representing the date to be used in the query.
+   * @param priceList
+   *     The PriceList object representing the price list to be used in the query.
+   * @param product
+   *     The Product object representing the product to be used in the query.
+   * @return A String representing the product price ID retrieved from the query. Returns null if no matching product price ID is found.
+   */
   public static String getProductPrice(Date date, PriceList priceList, Product product) {
     OBContext.setAdminMode(true);
     try {
       //@formatter:off
-      String hql = "select pp.id "
-          +" from PricingProductPrice as pp "
-          + " join pp.priceListVersion as plv "
-          + " join plv.priceList as pl "
-          + " where pp.product.id = :productId "
-          + " and plv.validFromDate <= :date "
-          + " and pl.id = :pricelistId "
-          + " and pl.active = true "
-          + " and pp.active = true "
-          + " and plv.active = true "
-          + " order by pl.default desc, plv.validFromDate desc";
+      String hql = new StringBuilder()
+          .append("select pp.id ")
+          .append(" from PricingProductPrice as pp ")
+          .append(" join pp.priceListVersion as plv ")
+          .append(" join plv.priceList as pl ")
+          .append(" where pp.product.id = :productId ")
+          .append(" and plv.validFromDate <= :date ")
+          .append(" and pl.id = :pricelistId ")
+          .append(" and pl.active = true ")
+          .append(" and pp.active = true ")
+          .append(" and plv.active = true ")
+          .append(" order by pl.default desc, plv.validFromDate desc")
+          .toString();
       //@formatter:on
       return OBDal.getInstance()
           .getSession()
