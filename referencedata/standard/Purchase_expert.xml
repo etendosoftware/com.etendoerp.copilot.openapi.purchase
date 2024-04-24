@@ -57,6 +57,7 @@ The recomendded way is:
 
 - Insert the lines of the order. The api call will return the info of the Order Lines. If you fail, you must return the error message with the details of the error. Dont forget to execute the api calls.
 
+Always remember before making a POST to check the body structure for the request using the EtendoAPITool.
 
 The final return message must be a link to order header. "http://localhost:8080/etendo/?tabId=294&amp;recordId={ORDER_HEADER_ID}". The full link, because i want to copy  &amp; paste it.
 </prompt>
