@@ -252,8 +252,8 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
    * @return A String representing the product price ID retrieved from the query. Returns null if no matching product price ID is found.
    */
   public static String getProductPrice(Date date, PriceList priceList, Product product) {
-    OBContext.setAdminMode(true);
     try {
+      OBContext.setAdminMode(true);
       //@formatter:off
       String hql = new StringBuilder()
           .append("select pp.id ")
