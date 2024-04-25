@@ -11,6 +11,7 @@ import javax.enterprise.event.Observes;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.model.Entity;
 import org.openbravo.base.model.ModelProvider;
@@ -56,13 +57,11 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
    *     If there is an error retrieving the product price or setting the prices, discount, or tax for the order line.
    */
   private void onInsert(@Observes EntityNewEvent event) {
-    if (!isValidEvent(event)) {
+    OrderLine ol = getOrderLine(event);
+    if (ol == null) {
       return;
     }
-    OrderLine ol = (OrderLine) event.getTargetInstance();
-    if (!(orderIsFromCopilot(ol.getSalesOrder()) && orderIsDraft(ol.getSalesOrder()))) {
-      return;
-    }
+
 
     Entity entity = event.getTargetInstance().getEntity();
     Property propertyCancelPriceAd = entity.getProperty(OrderLine.PROPERTY_CANCELPRICEADJUSTMENT);
@@ -105,55 +104,6 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
 
 
     // Prices
-    setPrices(event, isTaxIncludedPriceList, entity, priceActual, grossPriceList, grossBaseUnitPrice, netPriceList,
-        priceLimit, priceStd);
-
-
-    // Discount
-    BigDecimal calculatedDiscount = BigDecimal.ZERO;
-    BigDecimal price = isTaxIncludedPriceList ? grossPriceList : netPriceList;
-    if (!BigDecimal.ZERO.equals(price)) {
-      int precision = order.getCurrency().getPricePrecision().intValue();
-      calculatedDiscount = price.subtract(priceActual)
-          .multiply(BigDecimal.valueOf(100))
-          .divide(price, precision)
-          .setScale(0, RoundingMode.HALF_UP);
-    }
-    Property propertyDiscount = entity.getProperty(OrderLine.PROPERTY_DISCOUNT);
-    if (calculatedDiscount.compareTo((BigDecimal) event.getCurrentState(propertyDiscount)) != 0) {
-      event.setCurrentState(propertyDiscount, calculatedDiscount);
-    }
-    taxSearchAndSet(event, entity, order, product);
-    log.debug("OrderLine inserted: " + ol.getId());
-
-  }
-
-  /**
-   * This method sets the prices for an order line during its creation.
-   * It checks if the price list includes tax and sets the prices accordingly.
-   *
-   * @param event
-   *     The EntityNewEvent object representing the event of creating a new order line.
-   * @param isTaxIncludedPriceList
-   *     A boolean indicating whether the price list includes tax.
-   * @param entity
-   *     The Entity object representing the order line being created.
-   * @param priceActual
-   *     The actual price of the product.
-   * @param grossPriceList
-   *     The gross price from the price list.
-   * @param grossBaseUnitPrice
-   *     The gross base unit price of the product.
-   * @param netPriceList
-   *     The net price from the price list.
-   * @param priceLimit
-   *     The price limit for the product.
-   * @param priceStd
-   *     The standard price for the product.
-   */
-  private void setPrices(EntityNewEvent event, boolean isTaxIncludedPriceList, Entity entity, BigDecimal priceActual,
-      BigDecimal grossPriceList, BigDecimal grossBaseUnitPrice, BigDecimal netPriceList, BigDecimal priceLimit,
-      BigDecimal priceStd) {
     if (isTaxIncludedPriceList) {
       //Gross Unit Price
       Property propertyGrossUnitPrice = entity.getProperty(OrderLine.PROPERTY_GROSSUNITPRICE);
@@ -181,7 +131,48 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
       event.setCurrentState(propertyPriceActual, priceActual);
 
     }
+
+
+    // Discount
+    BigDecimal calculatedDiscount = BigDecimal.ZERO;
+    BigDecimal price = isTaxIncludedPriceList ? grossPriceList : netPriceList;
+    if (!BigDecimal.ZERO.equals(price)) {
+      int precision = order.getCurrency().getPricePrecision().intValue();
+      calculatedDiscount = price.subtract(priceActual)
+          .multiply(BigDecimal.valueOf(100))
+          .divide(price, precision, RoundingMode.HALF_UP);
+    }
+    Property propertyDiscount = entity.getProperty(OrderLine.PROPERTY_DISCOUNT);
+    if (calculatedDiscount.compareTo((BigDecimal) event.getCurrentState(propertyDiscount)) != 0) {
+      event.setCurrentState(propertyDiscount, calculatedDiscount);
+    }
+    taxSearchAndSet(event, entity, order, product);
+    log.debug("OrderLine inserted: " + ol.getId());
+
   }
+
+  /**
+   * This method retrieves the order line from the provided event.
+   * It first checks if the event is valid.
+   * Then, it checks if the sales order associated with the order line is from Copilot and in draft status.
+   * If both conditions are met, it returns the order line. Otherwise, it returns null.
+   *
+   * @param event
+   *     The EntityNewEvent object representing the event of creating a new order line.
+   * @return The OrderLine object representing the order line retrieved from the event. Returns null if the event is not valid or the sales order is not from Copilot or not in draft status.
+   */
+  @Nullable
+  private OrderLine getOrderLine(EntityNewEvent event) {
+    if (!isValidEvent(event)) {
+      return null;
+    }
+    OrderLine ol = (OrderLine) event.getTargetInstance();
+    if (!(orderIsFromCopilot(ol.getSalesOrder()) && orderIsDraft(ol.getSalesOrder()))) {
+      return null;
+    }
+    return ol;
+  }
+
 
   /**
    * This method sets the tax for an order line during its creation.

@@ -12,6 +12,10 @@ from copilot.core import utils
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils import copilot_debug
 
+"""
+Do not use this tool as a reference, it is not working, it is just a draft.
+"""
+
 
 class OpenAPIEtendoToolInput(BaseModel):
     question_prompt: str = Field(description="The question/request prompt to be asked to the OpenAPI specification")
@@ -76,8 +80,6 @@ def check_and_set_server_url(raw_api_spec, server_url):
                      "or the servers in the openapi spec")
 
 
-
-
 class OpenAPIEtendoTool(ToolWrapper):
     name = "OpenAPIEtendoTool"
     description = (''' This Tool, based on the OpenAPI specification, allows you to interact with the ETENDO API.
@@ -100,7 +102,6 @@ class OpenAPIEtendoTool(ToolWrapper):
             etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
 
             question_prompt = input_params.get('question_prompt')
-            similarity_search = input_params.get('similarity_search')
 
             # in local
             api_spec_file = (
@@ -131,7 +132,7 @@ class OpenAPIEtendoTool(ToolWrapper):
             openapi_agent_executor = create_copilot_openapi_agent(
                 reduced_openapi_spec, requests_wrapper, llm, agent_executor_kwargs=agent_ex_arg
             )
-            
+
             response = openapi_agent_executor.invoke({"input": question_prompt})
 
             response = {'message': response["output"]}

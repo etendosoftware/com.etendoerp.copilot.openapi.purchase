@@ -6,6 +6,7 @@ import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -84,7 +85,7 @@ public class CopilotWSServlet extends BaseWebService {
     OBQuery<T> searchQuery = OBDal.getInstance().createQuery(entityClass, whereOrderByClause2);
     Field tableNameField = entityClass.getField("TABLE_NAME");
     String tableName = (String) tableNameField.get(null);
-    searchQuery.setNamedParameter("tableName", tableName.toLowerCase());
+    searchQuery.setNamedParameter("tableName", StringUtils.lowerCase(tableName));
     searchQuery.setNamedParameter("searchTerm", searchTerm);
     searchQuery.setMaxResult(1);
     T resultOBJ = searchQuery.uniqueResult();
