@@ -11,7 +11,6 @@ import javax.enterprise.event.Observes;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.Nullable;
 import org.openbravo.base.exception.OBException;
 import org.openbravo.base.model.Entity;
 import org.openbravo.base.model.ModelProvider;
@@ -161,7 +160,6 @@ public class SetTaxAndPriceEventHandler extends EntityPersistenceEventObserver {
    *     The EntityNewEvent object representing the event of creating a new order line.
    * @return The OrderLine object representing the order line retrieved from the event. Returns null if the event is not valid or the sales order is not from Copilot or not in draft status.
    */
-  @Nullable
   private OrderLine getOrderLine(EntityNewEvent event) {
     if (!isValidEvent(event)) {
       return null;
