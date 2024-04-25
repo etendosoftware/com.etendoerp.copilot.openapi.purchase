@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Purchase Order API for Etendo ERP",
-    "description": "The Purchase Order API is designed to facilitate the creation and management of purchase orders within the Etendo ERP system. It provides endpoints for accessing and manipulating data related to business partners (suppliers), products, and other essential information required to generate purchase orders efficiently.\n\n## Features\n\n- **Business Partner Information**: Retrieve detailed information about business partners (suppliers), including contact details, addresses, and transaction histories.\n- **Product Catalog**: Access a comprehensive list of products, including descriptions, pricing, and stock levels.\n- **Order Management**: Create, update, and view purchase orders, along with the ability to add products to orders and specify quantities.\n- **Other entities**: The API is capable to get other data needed for the purcharse order/invoice importation",
+    "description": "The Purchase Order API is designed to facilitate the creation and management of purchase orders within the Etendo ERP system. It provides endpoints for accessing and manipulating data related to business partners (suppliers), products, and other essential information required to generate purchase orders efficiently.\n\n## Features\n\n- **Business Partner Information**: Retrieve detailed information about business partners (suppliers), including contact details, addresses, and transaction histories.\n- **Product Catalog**: Access a comprehensive list of products, including descriptions, pricing, and stock levels.\n- **Order Management**: Create, update, and view purchase orders, along with the ability to add products to orders and specify quantities.\n- **Other entities**: The API is capable to get other data needed for the purcharse order/invoice importation. Remember, the available Entities are Product, BusinesPartner, Order and OrderLine. \n# Entities Available\n  - Product: Products in Availables.\n  - BusinessPartner: Suppliers loaded in the system.\n  - Order: Order header, which contains the general information of the purchase order.\n  - OrderLine: Order line, each one stores one item of the order, with product and quantity information. The lines belong to an order header. Several lines can belong to the same header.\n\n",
     "version": "1.0.0"
   },
   "externalDocs": {
@@ -11,25 +11,13 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8080/etendo/sws/com.etendoerp.copilot.openapi.purchase.copilotws"
+      "url": "http://localhost:8080/etendo"
     }
   ],
   "tags": [
     {
-      "name": "Product",
-      "description": "Everything about the products",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "http://swagger.io"
-      }
-    },
-    {
-      "name": "businessPartner",
-      "description": "Everything about the business Partners",
-      "externalDocs": {
-        "description": "Find out more",
-        "url": "http://swagger.io"
-      }
+      "name": "Purchase",
+      "description": "Endpoints related to purchase orders and related entities"
     }
   ],
   "security": [
@@ -38,19 +26,40 @@
     }
   ],
   "paths": {
-    "/searchBySimilarity/Product": {
+    "/sws/com.etendoerp.copilot.openapi.purchase.copilotws/searchBySimilarity": {
       "get": {
-        "summary": "Search a product by simmilarity in his name",
-        "description": "This endpoint allow to search product with a searchterm not needin",
+        "summary": "Search a entity by similarity in his name in Etendo",
+        "description": "This endpoint allow to search a entity by similarity in his name in Etendo. The entityName query parameter is required and must be a valid entity name. The searchTerm query parameter is required and must be a valid string.\nThe available entities for this endpoint are:\n  - Product: Products in Availables.\n  - BusinessPartner: Suppliers loaded in the system. \n Example of use: /sws/com.etendoerp.copilot.openapi.purchase.copilotws/searchBySimilarity?entityName=Product&searchTerm=Water%20Bottle for search a product with the name 'Water Bottle'. For this endpoint, the parameters must be URL encoded, because the parameters are in the query string.",
         "security": [
           {
             "bearerAuth": []
           }
         ],
         "tags": [
-          "Product"
+          "Purchase"
         ],
         "parameters": [
+          {
+            "name": "entityName",
+            "in": "query",
+            "required": true,
+            "description": "Defines of which type is the entity to Search.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "Product",
+                "BusinessPartner",
+                "Organization",
+                "PaymentTerm"
+              ],
+              "enum": [
+                "Product",
+                "BusinessPartner",
+                "Organization",
+                "PaymentTerm"
+              ]
+            }
+          },
           {
             "name": "searchTerm",
             "in": "query",
@@ -98,6 +107,1973 @@
               }
             }
           },
+          "404": {
+            "description": "Wrong Endpoint, the correct endpoint is /sws/com.etendoerp.copilot.openapi.purchase.copilotws/searchBySimilarity",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "example": "<html><body><h1>Error 404: Endpoint incorrecto</h1></body></html>"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sws/com.smf.securewebservices.obRest/Product/{recordID}": {
+      "get": {
+        "summary": "Get a Product detailed information, searching by ID, returning the complete information of the Product. Remember, the ids inside the response are the ids that may be used in the order creation. Never omit information of the response.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Purchase"
+        ],
+        "parameters": [
+          {
+            "name": "recordID",
+            "in": "path",
+            "required": true,
+            "description": "ID of the record to be obtained.",
+            "schema": {
+              "type": "string",
+              "default": "DA7FC1BB3BA44EC48EC1AB9C74168CED"
+            }
+          },
+          {
+            "name": "identifiers",
+            "in": "query",
+            "required": true,
+            "description": "Include identifiers.",
+            "schema": {
+              "type": "boolean",
+              "examples": [
+                true
+              ],
+              "default": true
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Fields to select separated by commas.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "id, name"
+            }
+          },
+          {
+            "name": "noActive",
+            "in": "query",
+            "description": "If it is true, it will also search the non-active records.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requested Product information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_identifier": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "Office supplies"
+                            ]
+                          },
+                          "_entityName": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "Product"
+                            ]
+                          },
+                          "id": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "FF73714380904306A55B87438C1AEE32"
+                            ]
+                          },
+                          "client": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "23C59575B9CF467C9620760EB255B389"
+                            ]
+                          },
+                          "client$_identifier": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "F&B International Group"
+                            ]
+                          },
+                          "organization": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "2E60544D37534C0B89E765FE29BC0B43"
+                            ]
+                          },
+                          "organization$_identifier": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "F&B US",
+                              "Inc."
+                            ]
+                          },
+                          "active": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              true
+                            ]
+                          },
+                          "creationDate": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "2013-07-04T23:45:45-03:00"
+                            ]
+                          },
+                          "createdBy": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "0"
+                            ]
+                          },
+                          "createdBy$_identifier": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "System"
+                            ]
+                          },
+                          "updated": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "2013-07-04T23:45:45-03:00"
+                            ]
+                          },
+                          "updatedBy": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "0"
+                            ]
+                          },
+                          "updatedBy$_identifier": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "System"
+                            ]
+                          },
+                          "searchKey": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "OSupplies"
+                            ]
+                          },
+                          "name": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "Office supplies"
+                            ]
+                          },
+                          "description": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "comments": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "helpComment": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "uPCEAN": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "sKU": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "uOM": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "100"
+                            ]
+                          },
+                          "uOM$_identifier": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "Unit"
+                            ]
+                          },
+                          "salesRepresentative": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "100"
+                            ]
+                          },
+                          "salesRepresentative$_identifier": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "Etendo"
+                            ]
+                          },
+                          "summaryLevel": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "stocked": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "purchase": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              true
+                            ]
+                          },
+                          "sale": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "billOfMaterials": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "printDetailsOnInvoice": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "printDetailsOnPickList": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "bOMVerified": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "productCategory": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "7B795AA107694B5480B1C7D59FD5AE8A"
+                            ]
+                          },
+                          "productCategory$_identifier": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "Others"
+                            ]
+                          },
+                          "classification": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "volume": {
+                            "type": "integer",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "weight": {
+                            "type": "integer",
+                            "default": 0,
+                            "examples": [
+                              0
+                            ]
+                          },
+                          "shelfWidth": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "shelfHeight": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "shelfDepth": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "unitsPerPallet": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "taxCategory": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "43A120C9377B4537B5D1976D9B1233D7"
+                            ]
+                          },
+                          "taxCategory$_identifier": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "US State Sales Tax"
+                            ]
+                          },
+                          "resource": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "discontinued": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "discontinuedBy": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "processNow": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "expenseType": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "productType": {
+                            "type": "string",
+                            "default": "",
+                            "examples": [
+                              "I"
+                            ]
+                          },
+                          "imageURL": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "descriptionURL": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "guaranteedDays": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "versionNo": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "attributeSet": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "attributeSetValue": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "downloadURL": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "freightCategory": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "storageBin": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "image": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "businessPartner": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "printPrice": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              true
+                            ]
+                          },
+                          "name2": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "costType": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "standardCost": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "minimumStock": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "enforceAttribute": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "calculated": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "processPlan": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "production": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "capacity": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "minimumLeadTime": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "planner": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "planningMethod": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "maxQuantity": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "minQuantity": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "standardQuantity": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "quantityType": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "safetyStock": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "useAttributeSetValueAs": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "isquantityvariable": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "deferredRevenue": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "revenuePlanType": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "periodNumber": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "isdeferredexpense": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "expplantype": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "periodnumberExp": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "defaultPeriod": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "defaultPeriodExpense": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "bookUsingPurchaseOrderPrice": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "uOMForWeight": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "brand": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "isGeneric": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "genericProduct": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "createVariants": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "characteristicDescription": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "updateInvariants": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "manageVariants": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "includedProductCategories": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "includedProducts": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "printDescription": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "returnable": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              true
+                            ]
+                          },
+                          "overdueReturnDays": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "ispricerulebased": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "uniquePerDocument": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "relateprodcattoservice": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "relateprodtoservice": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "linkedToProduct": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "quantityRule": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "allowDeferredSell": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "deferredSellMaxDays": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "productStatus": {
+                            "default": null,
+                            "examples": [
+                              null
+                            ]
+                          },
+                          "modifyTax": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "relateprodcattaxtoservice": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "copyservicemodifytaxconfig": {
+                            "type": "boolean",
+                            "default": false,
+                            "examples": [
+                              false
+                            ]
+                          },
+                          "recordTime": {
+                            "type": "integer",
+                            "default": 0,
+                            "examples": [
+                              1582210044621
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sws/com.smf.securewebservices.obRest/BusinessPartner/{recordID}": {
+      "get": {
+        "summary": "Get a Business Partner (Supplier / Vendor) record by ID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Purchase"
+        ],
+        "parameters": [
+          {
+            "name": "recordID",
+            "in": "path",
+            "required": true,
+            "description": "ID of the record to be obtained.",
+            "schema": {
+              "type": "string",
+              "default": "DA7FC1BB3BA44EC48EC1AB9C74168CED"
+            }
+          },
+          {
+            "name": "identifiers",
+            "in": "query",
+            "required": true,
+            "description": "Include identifiers.",
+            "schema": {
+              "type": "boolean",
+              "examples": [
+                true
+              ],
+              "default": true
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Fields to select separated by commas.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "id, name"
+            }
+          },
+          {
+            "name": "noActive",
+            "in": "query",
+            "description": "If it is true, it will also search the non-active records.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Requested Business Partner info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "required": true,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_identifier": {
+                            "type": "string",
+                            "description": "A human-readable identifier for the business partner."
+                          },
+                          "_entityName": {
+                            "type": "string",
+                            "description": "The name of the entity, which should be 'BusinessPartner'."
+                          },
+                          "id": {
+                            "type": "string",
+                            "description": "The unique identifier for the business partner."
+                          },
+                          "client": {
+                            "type": "string",
+                            "description": "Client identifier to which the business partner belongs."
+                          },
+                          "client$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the client."
+                          },
+                          "organization": {
+                            "type": "string",
+                            "description": "Organization identifier to which the business partner is associated."
+                          },
+                          "organization$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the organization."
+                          },
+                          "active": {
+                            "type": "boolean",
+                            "description": "Indicates whether the business partner is active."
+                          },
+                          "creationDate": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "The date and time when the business partner was created."
+                          },
+                          "createdBy": {
+                            "type": "string",
+                            "description": "Identifier of the user who created the business partner record."
+                          },
+                          "createdBy$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the user who created the business partner."
+                          },
+                          "updated": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "The date and time when the business partner was last updated."
+                          },
+                          "updatedBy": {
+                            "type": "string",
+                            "description": "Identifier of the user who last updated the business partner record."
+                          },
+                          "updatedBy$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the user who last updated the business partner."
+                          },
+                          "searchKey": {
+                            "type": "string",
+                            "description": "A unique search key or code for the business partner."
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "The name of the business partner."
+                          },
+                          "name2": {
+                            "type": "string",
+                            "description": "An additional name or alias for the business partner."
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "A description of the business partner."
+                          },
+                          "summaryLevel": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is a summary level (grouping of several business partners)."
+                          },
+                          "businessPartnerCategory": {
+                            "type": "string",
+                            "description": "Identifier for the business partner category."
+                          },
+                          "businessPartnerCategory$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the business partner category."
+                          },
+                          "oneTimeTransaction": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is used for one-time transactions."
+                          },
+                          "potentialCustomer": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is a potential customer."
+                          },
+                          "vendor": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is a vendor."
+                          },
+                          "customer": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is a customer."
+                          },
+                          "employee": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is an employee."
+                          },
+                          "isSalesRepresentative": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is a sales representative."
+                          },
+                          "referenceNo": {
+                            "type": "string",
+                            "description": "A reference number for the business partner."
+                          },
+                          "dUNS": {
+                            "type": "string",
+                            "description": "Dun & Bradstreet number of the business partner."
+                          },
+                          "uRL": {
+                            "type": "string",
+                            "description": "URL or website of the business partner."
+                          },
+                          "language": {
+                            "type": "string",
+                            "description": "Default language of the business partner."
+                          },
+                          "language$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the default language."
+                          },
+                          "taxID": {
+                            "type": "string",
+                            "description": "Tax identification number of the business partner."
+                          },
+                          "taxExempt": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is exempt from tax."
+                          },
+                          "invoiceSchedule": {
+                            "type": "string",
+                            "description": "Invoice schedule identifier."
+                          },
+                          "valuation": {
+                            "type": "string",
+                            "description": "Valuation of the business partner."
+                          },
+                          "volumeOfSales": {
+                            "type": "string",
+                            "description": "Volume of sales associated with the business partner."
+                          },
+                          "noOfEmployees": {
+                            "type": "string",
+                            "description": "Number of employees in the business partner organization."
+                          },
+                          "nAICSSIC": {
+                            "type": "string",
+                            "description": "North American Industry Classification System or Standard Industrial Classification code."
+                          },
+                          "dateOfFirstSale": {
+                            "type": "string",
+                            "format": "date",
+                            "description": "Date of the first sale to or purchase from the business partner."
+                          },
+                          "acquisitionCost": {
+                            "type": "number",
+                            "description": "Cost of acquiring the business partner as a customer or vendor."
+                          },
+                          "expectedLifetimeRevenue": {
+                            "type": "number",
+                            "description": "Expected lifetime revenue from the business partner."
+                          },
+                          "lifetimeRevenueToDate": {
+                            "type": "number",
+                            "description": "Lifetime revenue to date from the business partner."
+                          },
+                          "share": {
+                            "type": "string",
+                            "description": "Share of business or market share associated with the business partner."
+                          },
+                          "formOfPayment": {
+                            "type": "string",
+                            "description": "Preferred form of payment for the business partner."
+                          },
+                          "creditLimit": {
+                            "type": "number",
+                            "description": "Credit limit assigned to the business partner."
+                          },
+                          "creditUsed": {
+                            "type": "number",
+                            "description": "Amount of credit used by the business partner."
+                          },
+                          "paymentTerms": {
+                            "type": "string",
+                            "description": "Payment terms associated with the business partner."
+                          },
+                          "priceList": {
+                            "type": "string",
+                            "description": "Price list identifier for the business partner."
+                          },
+                          "printDiscount": {
+                            "type": "boolean",
+                            "description": "Indicates if discounts are printed on invoices for the business partner."
+                          },
+                          "orderDescription": {
+                            "type": "string",
+                            "description": "Description for orders placed by the business partner."
+                          },
+                          "orderReference": {
+                            "type": "string",
+                            "description": "Reference for orders placed by the business partner."
+                          },
+                          "pOFormOfPayment": {
+                            "type": "string",
+                            "description": "Form of payment for purchase orders."
+                          },
+                          "purchasePricelist": {
+                            "type": "string",
+                            "description": "Pricelist for purchases made by the business partner."
+                          },
+                          "purchasePricelist$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the purchase pricelist."
+                          },
+                          "pOPaymentTerms": {
+                            "type": "string",
+                            "description": "Payment terms for purchase orders.",
+                            "required": true
+                          },
+                          "pOPaymentTerms$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable description of the payment terms for purchase orders."
+                          },
+                          "numberOfCopies": {
+                            "type": "string",
+                            "description": "Number of copies to be printed for documents."
+                          },
+                          "greeting": {
+                            "type": "string",
+                            "description": "Greeting or salutation for the business partner."
+                          },
+                          "invoiceTerms": {
+                            "type": "string",
+                            "description": "Terms for invoicing the business partner."
+                          },
+                          "deliveryTerms": {
+                            "type": "string",
+                            "description": "Delivery terms for the business partner."
+                          },
+                          "deliveryMethod": {
+                            "type": "string",
+                            "description": "Method of delivery for goods and services."
+                          },
+                          "salesRepresentative": {
+                            "type": "string",
+                            "description": "Sales representative associated with the business partner."
+                          },
+                          "partnerParent": {
+                            "type": "string",
+                            "description": "Parent entity of the business partner, if any."
+                          },
+                          "creditStatus": {
+                            "type": "string",
+                            "description": "Credit status of the business partner."
+                          },
+                          "forcedOrg": {
+                            "type": "string",
+                            "description": "Organization that is forced for transactions with the business partner."
+                          },
+                          "pricesShownInOrder": {
+                            "type": "boolean",
+                            "description": "Indicates if prices are shown in orders for the business partner."
+                          },
+                          "invoiceGrouping": {
+                            "type": "string",
+                            "description": "Grouping code for invoices to the business partner."
+                          },
+                          "maturityDate1": {
+                            "type": "string",
+                            "description": "First maturity date for payments to/from the business partner."
+                          },
+                          "maturityDate2": {
+                            "type": "string",
+                            "description": "Second maturity date for payments to/from the business partner."
+                          },
+                          "maturityDate3": {
+                            "type": "string",
+                            "description": "Third maturity date for payments to/from the business partner."
+                          },
+                          "operator": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is an operator."
+                          },
+                          "uPCEAN": {
+                            "type": "string",
+                            "description": "UPC/EAN code associated with the business partner."
+                          },
+                          "salaryCategory": {
+                            "type": "string",
+                            "description": "Salary category for employees within the business partner entity."
+                          },
+                          "invoicePrintformat": {
+                            "type": "string",
+                            "description": "Print format for invoices issued to the business partner."
+                          },
+                          "consumptionDays": {
+                            "type": "number",
+                            "description": "Number of consumption days for the business partner."
+                          },
+                          "bankAccount": {
+                            "type": "string",
+                            "description": "Bank account details for the business partner."
+                          },
+                          "taxCategory": {
+                            "type": "string",
+                            "description": "Tax category associated with the business partner."
+                          },
+                          "taxCategory$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the tax category."
+                          },
+                          "pOMaturityDate1": {
+                            "type": "string",
+                            "description": "First maturity date for purchase order payments."
+                          },
+                          "pOMaturityDate2": {
+                            "type": "string",
+                            "description": "Second maturity date for purchase order payments."
+                          },
+                          "pOMaturityDate3": {
+                            "type": "string",
+                            "description": "Third maturity date for purchase order payments."
+                          },
+                          "transactionalBankAccount": {
+                            "type": "string",
+                            "description": "Transactional bank account for the business partner."
+                          },
+                          "sOBPTaxCategory": {
+                            "type": "string",
+                            "description": "Special tax category for the business partner."
+                          },
+                          "fiscalcode": {
+                            "type": "string",
+                            "description": "Fiscal code for the business partner."
+                          },
+                          "isofiscalcode": {
+                            "type": "string",
+                            "description": "ISO fiscal code for the business partner."
+                          },
+                          "incotermsPO": {
+                            "type": "string",
+                            "description": "Incoterms for purchase orders."
+                          },
+                          "incotermsSO": {
+                            "type": "string",
+                            "description": "Incoterms for sales orders."
+                          },
+                          "paymentMethod": {
+                            "type": "string",
+                            "description": "Payment method for the business partner."
+                          },
+                          "pOPaymentMethod": {
+                            "type": "string",
+                            "description": "Payment method for purchase orders."
+                          },
+                          "pOPaymentMethod$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the payment method for purchase orders."
+                          },
+                          "account": {
+                            "type": "string",
+                            "description": "Account details for the business partner."
+                          },
+                          "pOFinancialAccount": {
+                            "type": "string",
+                            "description": "Financial account for purchase orders."
+                          },
+                          "pOFinancialAccount$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the financial account for purchase orders."
+                          },
+                          "customerBlocking": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is blocked from being a customer."
+                          },
+                          "vendorBlocking": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is blocked from being a vendor."
+                          },
+                          "paymentIn": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is allowed to make payments in."
+                          },
+                          "paymentOut": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is allowed to make payments out."
+                          },
+                          "salesInvoice": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is associated with sales invoices."
+                          },
+                          "purchaseInvoice": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is associated with purchase invoices."
+                          },
+                          "salesOrder": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is associated with sales orders."
+                          },
+                          "purchaseOrder": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is associated with purchase orders."
+                          },
+                          "goodsShipment": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is associated with goods shipments."
+                          },
+                          "goodsReceipt": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is associated with goods receipts."
+                          },
+                          "cashVAT": {
+                            "type": "boolean",
+                            "description": "Indicates if the business partner is subject to cash VAT."
+                          },
+                          "setNewCurrency": {
+                            "type": "boolean",
+                            "description": "Indicates if a new currency is set for the business partner."
+                          },
+                          "currency": {
+                            "type": "string",
+                            "description": "Currency code for transactions with the business partner.",
+                            "required": true
+                          },
+                          "currency$_identifier": {
+                            "type": "string",
+                            "description": "Human-readable name of the currency."
+                          },
+                          "birthPlace": {
+                            "type": "string",
+                            "description": "Place of birth for the business partner."
+                          },
+                          "birthDay": {
+                            "type": "string",
+                            "format": "date",
+                            "description": "Birthday of the business partner."
+                          },
+                          "smfijProject": {
+                            "type": "string",
+                            "description": "Project code associated with the business partner."
+                          },
+                          "isCustomerConsent": {
+                            "type": "boolean",
+                            "description": "Indicates if there is customer consent for processing data."
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sws/com.smf.securewebservices.obRest/Order": {
+      "get": {
+        "summary": "List Order Header records",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Purchase"
+        ],
+        "parameters": [
+          {
+            "name": "firstResult",
+            "in": "query",
+            "description": "First result, pagination use.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "examples": [
+                "0"
+              ]
+            }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "required": true,
+            "description": "Total number of results, used for pagination. E.g. If firstResult is 0, and maxResults is 4, then it will return 4 records starting the count from 0 (Records 0, 1, 2 and 3). Therefore, if firstResult is 10 and maxResults is 3, it will return the records 10, 11 and 12",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "examples": [
+                4
+              ]
+            }
+          },
+          {
+            "name": "distinct",
+            "in": "query",
+            "required": false,
+            "description": "Only filters by entities. Returns the specified entity from the model.",
+            "schema": {
+              "type": "string",
+              "examplea": [
+                "Organization"
+              ]
+            }
+          },
+          {
+            "name": "identifiers",
+            "in": "query",
+            "required": true,
+            "description": "Include identifiers.",
+            "schema": {
+              "type": "boolean",
+              "examplea": [
+                true
+              ],
+              "default": true
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "The \"Q\" parameter allows you to apply clauses to filter records based on specific criteria. For more information check <a href=\"https://etendoproject.atlassian.net/wiki/spaces/PUB/pages/3057614854/How+to+filter+using+the+q+parameter+in+SecureWebServices\">the following documentation</a>.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "uOM == '100'"
+              ]
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Clause order by in HQL. Field/s with which to sort the results.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Fields to select separated by commas.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "id, name"
+              ]
+            }
+          },
+          {
+            "name": "noActive",
+            "in": "query",
+            "description": "If it is true, non-active records will also be returned.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "examples": [
+                true
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of object from Etendo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Order"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add/edit Order Header record",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Purchase"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "orderDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The date when the order is placed. This value must be provided by the user, and it should be the same as scheduledDeliveryDate and accountingDate.",
+                        "required": true
+                      },
+                      "scheduledDeliveryDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The scheduled delivery date for the order, which should match the orderDate and accountingDate.",
+                        "required": true
+                      },
+                      "accountingDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The accounting date for the order, which should be identical to orderDate and scheduledDeliveryDate.",
+                        "required": true
+                      },
+                      "businessPartner": {
+                        "type": "string",
+                        "description": "The ID of the supplier.",
+                        "examples": [
+                          "858B90C7AF0A4533863EEC65437382BF"
+                        ],
+                        "required": true
+                      },
+                      "orderReference": {
+                        "type": "string",
+                        "description": "Reference for the order, typically  this info is provided when creating the order."
+                      },
+                      "documentType": {
+                        "type": "string",
+                        "description": "The type of document for the order. Use 'AB22CE8FFA5E4AF29F2AC90FCDD400D8' for this order.",
+                        "examples": [
+                          "AB22CE8FFA5E4AF29F2AC90FCDD400D8"
+                        ],
+                        "default": "AB22CE8FFA5E4AF29F2AC90FCDD400D8",
+                        "required": true
+                      },
+                      "transactionDocument": {
+                        "type": "string",
+                        "description": "Transaction document for the order. Utilize 'AB22CE8FFA5E4AF29F2AC90FCDD400D8' for this transaction.",
+                        "examples": [
+                          "AB22CE8FFA5E4AF29F2AC90FCDD400D8"
+                        ],
+                        "default": "AB22CE8FFA5E4AF29F2AC90FCDD400D8",
+                        "required": true
+                      },
+                      "partnerAddress": {
+                        "type": "string",
+                        "description": "Supplier's address. For now, use '1F38687D74244B369F0B16B3858CD256'.",
+                        "examples": [
+                          "1F38687D74244B369F0B16B3858CD256"
+                        ],
+                        "default": "1F38687D74244B369F0B16B3858CD256",
+                        "required": true
+                      },
+                      "currency": {
+                        "type": "string",
+                        "description": "Currency ID for currency in which the order is made. If reading from BusinessPartner, the currency can be obtained from the same, property: 'currency'.",
+                        "examples": [
+                          "102"
+                        ],
+                        "required": true
+                      },
+                      "paymentMethod": {
+                        "type": "string",
+                        "description": "Payment method preferred from the supplier. Read this value from the BusinessPartner, property: 'pOPaymentMethod'. This property is not mandatory, but it is very useful to have it. ",
+                        "examples": [
+                          "66BA1164A7394344BB9CD1A6ECEED05D"
+                        ]
+                      },
+                      "paymentTerms": {
+                        "type": "string",
+                        "description": "Payment terms from the supplier. Read this value from the BusinessPartner, property: 'pOPaymentTerms'.",
+                        "examples": [
+                          "66BA1164A7394344BB9CD1A6ECEED05D"
+                        ],
+                        "required": true
+                      },
+                      "warehouse": {
+                        "type": "string",
+                        "description": "Warehouse where the order will be stored. Use 'B2D40D8A5D644DD89E329DC297309055' for this order.",
+                        "examples": [
+                          "B2D40D8A5D644DD89E329DC297309055"
+                        ],
+                        "default": "B2D40D8A5D644DD89E329DC297309055",
+                        "required": true
+                      },
+                      "priceList": {
+                        "type": "string",
+                        "description": "Price list from the supplier. Can be obtained from the BusinessPartner, property: 'purchasePricelist'.",
+                        "examples": [
+                          "91AE1E96A30844209CD996917E193BE1"
+                        ],
+                        "default": "supplier's purchase price list",
+                        "required": true
+                      },
+                      "salesTransaction": {
+                        "type": "boolean",
+                        "description": "Indicates if the order is a sales transaction. In this case, it is not. Always false.",
+                        "examples": [
+                          false
+                        ],
+                        "default": false,
+                        "required": true
+                      },
+                      "eTCPOPPFromCopilot": {
+                        "type": "boolean",
+                        "description": "Indicates if the order is created from Copilot. Use always true.",
+                        "default": true,
+                        "required": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Object created or edited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Order"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sws/com.smf.securewebservices.obRest/OrderLine": {
+      "get": {
+        "summary": "List records",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Purchase"
+        ],
+        "parameters": [
+          {
+            "name": "firstResult",
+            "in": "query",
+            "description": "First result, pagination use.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "examples": [
+                "0"
+              ]
+            }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "required": true,
+            "description": "Total number of results, used for pagination. E.g. If firstResult is 0, and maxResults is 4, then it will return 4 records starting the count from 0 (Records 0, 1, 2 and 3). Therefore, if firstResult is 10 and maxResults is 3, it will return the records 10, 11 and 12",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "examples": [
+                4
+              ]
+            }
+          },
+          {
+            "name": "distinct",
+            "in": "query",
+            "required": false,
+            "description": "Only filters by entities. Returns the specified entity from the model.",
+            "schema": {
+              "type": "string",
+              "examplea": [
+                "Organization"
+              ]
+            }
+          },
+          {
+            "name": "identifiers",
+            "in": "query",
+            "required": true,
+            "description": "Include identifiers.",
+            "schema": {
+              "type": "boolean",
+              "examples": [
+                true
+              ],
+              "default": true
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "The \"Q\" parameter allows you to apply clauses to filter records based on specific criteria. For more information check <a href=\"https://etendoproject.atlassian.net/wiki/spaces/PUB/pages/3057614854/How+to+filter+using+the+q+parameter+in+SecureWebServices\">the following documentation</a>.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "uOM == '100'"
+              ]
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Clause order by in HQL. Field/s with which to sort the results.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Fields to select separated by commas.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "id, name"
+              ]
+            }
+          },
+          {
+            "name": "noActive",
+            "in": "query",
+            "description": "If it is true, non-active records will also be returned.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "examples": [
+                true
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of object from Etendo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderLine"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add/edit Order Line record",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Purchase"
+        ],
+        "requestBody": {
+          "description": "Information of the order line for being inserted",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "data": {
+                    "type": "object",
+                    "properties": {
+                      "organization": {
+                        "type": "string",
+                        "examples": [
+                          "E443A31992CB4635AFCAEABE7183CE85"
+                        ],
+                        "required": true
+                      },
+                      "salesOrder": {
+                        "type": "string",
+                        "description": "The ID of the order header.",
+                        "examples": [
+                          "871FE88083AA4C46B867C3CBE84FC7AF"
+                        ],
+                        "required": true
+                      },
+                      "lineNo": {
+                        "type": "integer",
+                        "description": "The line number of the order. Increases by 10",
+                        "examples": [
+                          10
+                        ],
+                        "required": true
+                      },
+                      "uOM": {
+                        "type": "string",
+                        "description": "Unit of measure for the order. Use '100' for this order.",
+                        "examples": [
+                          "100"
+                        ],
+                        "required": true
+                      },
+                      "product": {
+                        "type": "string",
+                        "description": "The ID of the product.",
+                        "examples": [
+                          "20FBF069AC804DE9BF16670000B9562E"
+                        ],
+                        "required": true
+                      },
+                      "orderDate": {
+                        "type": "string",
+                        "format": "date",
+                        "description": "The date when the order is placed. This value must be provided by the user, it should be the same as orderDate of the order header",
+                        "examples": [
+                          "2024-03-01"
+                        ],
+                        "required": true
+                      },
+                      "warehouse": {
+                        "type": "string",
+                        "description": "Warehouse where the order will be stored. Use  B2D40D8A5D644DD89E329DC297309055",
+                        "examples": [
+                          "B2D40D8A5D644DD89E329DC297309055"
+                        ],
+                        "required": true
+                      },
+                      "currency": {
+                        "type": "string",
+                        "description": "Currency ID for currency in which the order is made. This must be the same as the currency of the order header.",
+                        "examples": [
+                          "102"
+                        ],
+                        "required": true
+                      },
+                      "tax": {
+                        "type": "string",
+                        "description": "Tax ID for the order. Use '18A499249FF74A68B79510F0AD341141' for this order.",
+                        "examples": [
+                          "18A499249FF74A68B79510F0AD341141"
+                        ],
+                        "required": true
+                      },
+                      "orderedQuantity": {
+                        "type": "integer",
+                        "description": "The quantity of the product ordered.",
+                        "examples": [
+                          150
+                        ],
+                        "required": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Object created or edited.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderLine"
+                }
+              }
+            }
+          },
           "default": {
             "description": "unexpected error",
             "content": {
@@ -114,851 +2090,1241 @@
   },
   "components": {
     "schemas": {
-      "LogResp": {
+      "Order": {
         "type": "object",
-        "title": "Login response",
         "properties": {
-          "status": {
-            "type": "string",
-            "examplse": "success"
-          },
-          "token": {
-            "type": "string",
-            "examples": [
-              "eyJhbGciOiJIUzI1NiJ9yJhdWQiOiJzd3MiLCJyb2xlIjoiMCIsIm9yZ2FuaXphdGlvbiI6IjAiLCJpc3MiOiJzd3MiLCJleHAiOjE1ODE1MjMxNTcsInVzZXIiOiIxMDAiLCJpYXQiOjE1ODE1MTU3Nzd9.yAwUz7B1xOuMJzrtt6LJo0O7UNi133W15Uv_RfW3IM"
-            ]
-          },
-          "roleList": {
+          "data": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
+                "_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "1000364 - 01-03-2024 - 0"
+                  ]
+                },
+                "_entityName": {
+                  "type": "string",
+                  "examples": [
+                    "Order"
+                  ]
+                },
                 "id": {
                   "type": "string",
                   "examples": [
-                    "0"
+                    "2FD21AD0D38D484AB86DB3E2F47C02B7"
                   ]
                 },
-                "name": {
+                "client": {
                   "type": "string",
-                  "default": "",
                   "examples": [
-                    "System Administrator"
+                    "23C59575B9CF467C9620760EB255B389"
                   ]
                 },
-                "orgList": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "string",
-                        "examples": [
-                          "0"
-                        ]
-                      },
-                      "name": {
-                        "type": "string",
-                        "examples": [
-                          "*"
-                        ]
-                      },
-                      "warehouseList": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "id": {
-                              "type": "string",
-                              "examples": [
-                                "0"
-                              ]
-                            },
-                            "name": {
-                              "type": "string",
-                              "examples": [
-                                "*"
-                              ]
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
+                "client$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "F&B International Group"
+                  ]
+                },
+                "organization": {
+                  "type": "string",
+                  "examples": [
+                    "E443A31992CB4635AFCAEABE7183CE85"
+                  ]
+                },
+                "organization$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "F&B España - Región Norte"
+                  ]
+                },
+                "active": {
+                  "type": "boolean",
+                  "examples": [
+                    true
+                  ]
+                },
+                "creationDate": {
+                  "type": "string",
+                  "examples": [
+                    "2024-03-14T15:29:42-03:00"
+                  ]
+                },
+                "createdBy": {
+                  "type": "string",
+                  "examples": [
+                    "100"
+                  ]
+                },
+                "createdBy$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Admin"
+                  ]
+                },
+                "updated": {
+                  "type": "string",
+                  "examples": [
+                    "2024-03-14T15:29:42-03:00"
+                  ]
+                },
+                "updatedBy": {
+                  "type": "string",
+                  "examples": [
+                    "100"
+                  ]
+                },
+                "updatedBy$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Admin"
+                  ]
+                },
+                "salesTransaction": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "documentNo": {
+                  "type": "string",
+                  "examples": [
+                    "1000364"
+                  ]
+                },
+                "documentStatus": {
+                  "type": "string",
+                  "examples": [
+                    "DR"
+                  ]
+                },
+                "documentAction": {
+                  "type": "string",
+                  "examples": [
+                    "CO"
+                  ]
+                },
+                "processNow": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "processed": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "documentType": {
+                  "type": "string",
+                  "examples": [
+                    "AB22CE8FFA5E4AF29F2AC90FCDD400D8"
+                  ]
+                },
+                "documentType$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Purchase Order"
+                  ]
+                },
+                "transactionDocument": {
+                  "type": "string",
+                  "examples": [
+                    "AB22CE8FFA5E4AF29F2AC90FCDD400D8"
+                  ]
+                },
+                "transactionDocument$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Purchase Order"
+                  ]
+                },
+                "description": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "delivered": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "reinvoice": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "print": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "selected": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "salesRepresentative": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "orderDate": {
+                  "type": "string",
+                  "examples": [
+                    "2024-03-01"
+                  ]
+                },
+                "scheduledDeliveryDate": {
+                  "type": "string",
+                  "examples": [
+                    "2024-03-01"
+                  ]
+                },
+                "datePrinted": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "accountingDate": {
+                  "type": "string",
+                  "examples": [
+                    "2024-03-01"
+                  ]
+                },
+                "businessPartner": {
+                  "type": "string",
+                  "examples": [
+                    "858B90C7AF0A4533863EEC65437382BF"
+                  ]
+                },
+                "businessPartner$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Bebidas Alegres, S.L."
+                  ]
+                },
+                "invoiceAddress": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "partnerAddress": {
+                  "type": "string",
+                  "examples": [
+                    "1F38687D74244B369F0B16B3858CD256"
+                  ]
+                },
+                "partnerAddress$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    ".Barcelona, C\\Mayor, 23"
+                  ]
+                },
+                "orderReference": {
+                  "type": "string",
+                  "examples": [
+                    "9989"
+                  ]
+                },
+                "printDiscount": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "currency": {
+                  "type": "string",
+                  "examples": [
+                    "102"
+                  ]
+                },
+                "currency$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "EUR"
+                  ]
+                },
+                "formOfPayment": {
+                  "type": "string",
+                  "examples": [
+                    "B"
+                  ]
+                },
+                "paymentTerms": {
+                  "type": "string",
+                  "examples": [
+                    "66BA1164A7394344BB9CD1A6ECEED05D"
+                  ]
+                },
+                "paymentTerms$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "30 days"
+                  ]
+                },
+                "invoiceTerms": {
+                  "type": "string",
+                  "examples": [
+                    "D"
+                  ]
+                },
+                "deliveryTerms": {
+                  "type": "string",
+                  "examples": [
+                    "A"
+                  ]
+                },
+                "freightCostRule": {
+                  "type": "string",
+                  "examples": [
+                    "I"
+                  ]
+                },
+                "freightAmount": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "deliveryMethod": {
+                  "type": "string",
+                  "examples": [
+                    "P"
+                  ]
+                },
+                "shippingCompany": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "charge": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "chargeAmount": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "priority": {
+                  "type": "string",
+                  "examples": [
+                    "5"
+                  ]
+                },
+                "summedLineAmount": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "grandTotalAmount": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "warehouse": {
+                  "type": "string",
+                  "examples": [
+                    "B2D40D8A5D644DD89E329DC297309055"
+                  ]
+                },
+                "warehouse$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "España Región Norte"
+                  ]
+                },
+                "priceList": {
+                  "type": "string",
+                  "examples": [
+                    "91AE1E96A30844209CD996917E193BE1"
+                  ]
+                },
+                "priceList$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Tarifa Bebidas Alegres"
+                  ]
+                },
+                "priceIncludesTax": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "salesCampaign": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "project": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "activity": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "posted": {
+                  "type": "string",
+                  "examples": [
+                    "N"
+                  ]
+                },
+                "userContact": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "copyFrom": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "dropShipPartner": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "dropShipLocation": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "dropShipContact": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "selfService": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "trxOrganization": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "stDimension": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "ndDimension": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "deliveryNotes": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "incoterms": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "iNCOTERMSDescription": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "generateTemplate": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "deliveryLocation": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "copyFromPO": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "paymentMethod": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "fINPaymentPriority": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "pickFromShipment": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "receiveMaterials": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "createInvoice": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "returnReason": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "addOrphanLine": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "asset": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "calculatePromotions": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "costcenter": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "createOrder": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "rejectReason": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "validUntil": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "quotation": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "reservationStatus": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "createPOLines": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "cashVAT": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "pickfromreceipt": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "cancelandreplace": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "aPRMAddPayment": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "confirmcancelandreplace": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "cancelledorder": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "replacedorder": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "iscancelled": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "replacementorder": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "externalBusinessPartnerReference": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "deliveryStatus": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "invoiceStatus": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "paymentStatus": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "_computedColumns": {
+                  "type": "string",
+                  "examples": [
+                    "2FD21AD0D38D484AB86DB3E2F47C02B7"
+                  ]
+                },
+                "_computedColumns$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Order_ComputedColumns (2FD21AD0D38D484AB86DB3E2F47C02B7)"
+                  ]
                 }
               }
             }
           }
         }
       },
-      "Product": {
+      "Error": {
         "type": "object",
+        "required": [
+          "status",
+          "message"
+        ],
         "properties": {
-          "_identifier": {
+          "status": {
             "type": "string",
-            "default": "",
             "examples": [
-              "Office supplies"
+              "error"
             ]
           },
-          "_entityName": {
+          "message": {
             "type": "string",
-            "default": "",
             "examples": [
-              "Product"
-            ]
-          },
-          "$ref": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "Product/FF73714380904306A55B87438C1AEE32"
-            ]
-          },
-          "id": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "FF73714380904306A55B87438C1AEE32"
-            ]
-          },
-          "client": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "23C59575B9CF467C9620760EB255B389"
-            ]
-          },
-          "client$_identifier": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "F&B International Group"
-            ]
-          },
-          "organization": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "2E60544D37534C0B89E765FE29BC0B43"
-            ]
-          },
-          "organization$_identifier": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "F&B US",
-              "Inc."
-            ]
-          },
-          "active": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              true
-            ]
-          },
-          "creationDate": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "2013-07-04T23:45:45-03:00"
-            ]
-          },
-          "createdBy": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "0"
-            ]
-          },
-          "createdBy$_identifier": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "System"
-            ]
-          },
-          "updated": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "2013-07-04T23:45:45-03:00"
-            ]
-          },
-          "updatedBy": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "0"
-            ]
-          },
-          "updatedBy$_identifier": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "System"
-            ]
-          },
-          "searchKey": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "OSupplies"
-            ]
-          },
-          "name": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "Office supplies"
-            ]
-          },
-          "description": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "comments": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "helpComment": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "uPCEAN": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "sKU": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "uOM": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "100"
-            ]
-          },
-          "uOM$_identifier": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "Unit"
-            ]
-          },
-          "salesRepresentative": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "100"
-            ]
-          },
-          "salesRepresentative$_identifier": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "Etendo"
-            ]
-          },
-          "summaryLevel": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "stocked": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "purchase": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              true
-            ]
-          },
-          "sale": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "billOfMaterials": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "printDetailsOnInvoice": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "printDetailsOnPickList": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "bOMVerified": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "productCategory": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "7B795AA107694B5480B1C7D59FD5AE8A"
-            ]
-          },
-          "productCategory$_identifier": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "Others"
-            ]
-          },
-          "classification": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "volume": {
-            "type": "integer",
-            "default": 0,
-            "examples": [
-              0
-            ]
-          },
-          "weight": {
-            "type": "integer",
-            "default": 0,
-            "examples": [
-              0
-            ]
-          },
-          "shelfWidth": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "shelfHeight": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "shelfDepth": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "unitsPerPallet": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "taxCategory": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "43A120C9377B4537B5D1976D9B1233D7"
-            ]
-          },
-          "taxCategory$_identifier": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "US State Sales Tax"
-            ]
-          },
-          "resource": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "discontinued": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "discontinuedBy": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "processNow": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "expenseType": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "productType": {
-            "type": "string",
-            "default": "",
-            "examples": [
-              "I"
-            ]
-          },
-          "imageURL": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "descriptionURL": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "guaranteedDays": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "versionNo": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "attributeSet": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "attributeSetValue": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "downloadURL": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "freightCategory": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "storageBin": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "image": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "businessPartner": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "printPrice": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              true
-            ]
-          },
-          "name2": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "costType": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "standardCost": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "minimumStock": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "enforceAttribute": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "calculated": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "processPlan": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "production": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "capacity": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "minimumLeadTime": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "planner": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "planningMethod": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "maxQuantity": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "minQuantity": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "standardQuantity": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "quantityType": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "safetyStock": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "useAttributeSetValueAs": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "isquantityvariable": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "deferredRevenue": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "revenuePlanType": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "periodNumber": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "isdeferredexpense": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "expplantype": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "periodnumberExp": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "defaultPeriod": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "defaultPeriodExpense": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "bookUsingPurchaseOrderPrice": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "uOMForWeight": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "brand": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "isGeneric": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "genericProduct": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "createVariants": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "characteristicDescription": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "updateInvariants": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "manageVariants": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "includedProductCategories": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "includedProducts": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "printDescription": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "returnable": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              true
-            ]
-          },
-          "overdueReturnDays": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "ispricerulebased": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "uniquePerDocument": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "relateprodcattoservice": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "relateprodtoservice": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "linkedToProduct": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "quantityRule": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "allowDeferredSell": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "deferredSellMaxDays": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "productStatus": {
-            "default": null,
-            "examples": [
-              null
-            ]
-          },
-          "modifyTax": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "relateprodcattaxtoservice": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "copyservicemodifytaxconfig": {
-            "type": "boolean",
-            "default": false,
-            "examples": [
-              false
-            ]
-          },
-          "recordTime": {
-            "type": "integer",
-            "default": 0,
-            "examples": [
-              1582210044621
+              "Error."
             ]
           }
         }
       },
-      "Error": null,
+      "OrderLine": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "1000365 - 01-03-2024 - 0.00 - 10 - 0.00"
+                  ]
+                },
+                "_entityName": {
+                  "type": "string",
+                  "examples": [
+                    "OrderLine"
+                  ]
+                },
+                "id": {
+                  "type": "string",
+                  "examples": [
+                    "A24D77BC113443F983C165D261215C19"
+                  ]
+                },
+                "client": {
+                  "type": "string",
+                  "examples": [
+                    "23C59575B9CF467C9620760EB255B389"
+                  ]
+                },
+                "client$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "F&B International Group"
+                  ]
+                },
+                "organization": {
+                  "type": "string",
+                  "examples": [
+                    "E443A31992CB4635AFCAEABE7183CE85"
+                  ]
+                },
+                "organization$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "F&B España - Región Norte"
+                  ]
+                },
+                "active": {
+                  "type": "boolean",
+                  "examples": [
+                    true
+                  ]
+                },
+                "creationDate": {
+                  "type": "string",
+                  "examples": [
+                    "2024-03-14T19:33:44-03:00"
+                  ]
+                },
+                "createdBy": {
+                  "type": "string",
+                  "examples": [
+                    "100"
+                  ]
+                },
+                "createdBy$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Admin"
+                  ]
+                },
+                "updated": {
+                  "type": "string",
+                  "examples": [
+                    "2024-03-14T19:33:44-03:00"
+                  ]
+                },
+                "updatedBy": {
+                  "type": "string",
+                  "examples": [
+                    "100"
+                  ]
+                },
+                "updatedBy$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Admin"
+                  ]
+                },
+                "salesOrder": {
+                  "type": "string",
+                  "examples": [
+                    "871FE88083AA4C46B867C3CBE84FC7AF"
+                  ]
+                },
+                "salesOrder$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "1000365 - 01-03-2024 - 0.00"
+                  ]
+                },
+                "lineNo": {
+                  "type": "integer",
+                  "examples": [
+                    10
+                  ]
+                },
+                "businessPartner": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "partnerAddress": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "orderDate": {
+                  "type": "string",
+                  "examples": [
+                    "2024-03-01"
+                  ]
+                },
+                "scheduledDeliveryDate": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "dateDelivered": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "invoiceDate": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "description": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "product": {
+                  "type": "string",
+                  "examples": [
+                    "20FBF069AC804DE9BF16670000B9562E"
+                  ]
+                },
+                "product$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Cherry Cola"
+                  ]
+                },
+                "warehouse": {
+                  "type": "string",
+                  "examples": [
+                    "B2D40D8A5D644DD89E329DC297309055"
+                  ]
+                },
+                "warehouse$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "España Región Norte"
+                  ]
+                },
+                "directShipment": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "uOM": {
+                  "type": "string",
+                  "examples": [
+                    "100"
+                  ]
+                },
+                "uOM$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Unit"
+                  ]
+                },
+                "orderedQuantity": {
+                  "type": "integer",
+                  "examples": [
+                    150
+                  ]
+                },
+                "reservedQuantity": {
+                  "type": "integer",
+                  "examples": [
+                    0
+                  ]
+                },
+                "deliveredQuantity": {
+                  "type": "integer",
+                  "examples": [
+                    0
+                  ]
+                },
+                "invoicedQuantity": {
+                  "type": "integer",
+                  "examples": [
+                    0
+                  ]
+                },
+                "shippingCompany": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "currency": {
+                  "type": "string",
+                  "examples": [
+                    "102"
+                  ]
+                },
+                "currency$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "EUR"
+                  ]
+                },
+                "listPrice": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "unitPrice": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "priceLimit": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "lineNetAmount": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "discount": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "freightAmount": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "charge": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "chargeAmount": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "tax": {
+                  "type": "string",
+                  "examples": [
+                    "18A499249FF74A68B79510F0AD341141"
+                  ]
+                },
+                "tax$_identifier": {
+                  "type": "string",
+                  "examples": [
+                    "Adquisiciones IVA 21%"
+                  ]
+                },
+                "resourceAssignment": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "sOPOReference": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "attributeSetValue": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "descriptionOnly": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "orderQuantity": {
+                  "type": "number",
+                  "examples": [
+                    null
+                  ]
+                },
+                "orderUOM": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "priceAdjustment": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "standardPrice": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "cancelPriceAdjustment": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "orderDiscount": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "editLineAmount": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "taxableAmount": {
+                  "type": "number",
+                  "examples": [
+                    null
+                  ]
+                },
+                "goodsShipmentLine": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "returnReason": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "grossUnitPrice": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "lineGrossAmount": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "grossListPrice": {
+                  "type": "number",
+                  "examples": [
+                    null
+                  ]
+                },
+                "costcenter": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "baseGrossUnitPrice": {
+                  "type": "number",
+                  "examples": [
+                    0
+                  ]
+                },
+                "asset": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "warehouseRule": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "stDimension": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "quotationLine": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "ndDimension": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "createReservation": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "project": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "reservationStatus": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "manageReservation": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "managePrereservation": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "explode": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "bOMParent": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "replacedorderline": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "printDescription": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "overdueReturnDays": {
+                  "type": "number",
+                  "examples": [
+                    null
+                  ]
+                },
+                "selectOrderLine": {
+                  "type": "boolean",
+                  "examples": [
+                    false
+                  ]
+                },
+                "operativeUOM": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                },
+                "operativeQuantity": {
+                  "type": "number",
+                  "examples": [
+                    null
+                  ]
+                },
+                "returnline": {
+                  "type": "string",
+                  "examples": [
+                    null
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
       "ApiResponse": {
         "type": "object",
         "properties": {
@@ -978,7 +3344,7 @@
         }
       }
     },
-    "requestBodies": null,
+    "requestBodies": {},
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
