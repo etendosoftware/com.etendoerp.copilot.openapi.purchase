@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?><ob:Openbravo xmlns:ob="http://www.openbravo.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ETCOP_App_Tool id="156CC687AD7D4AD5AB1F851FEF3A8FC4" identifier="Purchase expert - OCR Tool">
+    <id>156CC687AD7D4AD5AB1F851FEF3A8FC4</id>
+    <active>true</active>
+    <creationDate transient="true">2024-04-24T17:03:53.584Z</creationDate>
+    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
+    <updated transient="true">2024-04-24T17:03:53.584Z</updated>
+    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
+    <copilotTool id="EB58EEA0AA804C219C4D64260550745A" entity-name="ETCOP_Tool" identifier="OCR Tool"/>
+    <copilotApp id="99EF6518D63F4329B775F2A43236D289" entity-name="ETCOP_App" identifier="Purchase expert"/>
+  </ETCOP_App_Tool>
   <ETCOP_App_Tool id="30C0A8F417BC4ADABA40D60B03E57113" identifier="Purchase expert - Etendo API Tool">
     <id>30C0A8F417BC4ADABA40D60B03E57113</id>
     <active>true</active>
@@ -24,7 +34,7 @@
     <active>true</active>
     <creationDate transient="true">2024-04-22T13:50:50.394Z</creationDate>
     <createdBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
-    <updated transient="true">2024-04-22T13:51:01.952Z</updated>
+    <updated transient="true">2024-04-23T09:24:11.485Z</updated>
     <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
     <name>Purchase expert</name>
     <description xsi:nil="true"/>

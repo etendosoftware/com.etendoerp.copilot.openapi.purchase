@@ -6,6 +6,8 @@
 <!--A2F59BCF87A341049A180C1BCFF04142-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
 <!--A2F59BCF87A341049A180C1BCFF04142-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--A2F59BCF87A341049A180C1BCFF04142-->  <NAME><![CDATA[EM_ETCPOPP_ From Copilot]]></NAME>
+<!--A2F59BCF87A341049A180C1BCFF04142-->  <DESCRIPTION><![CDATA[This check indicates that this file was entered into Etendo through the Copilot chat window.]]></DESCRIPTION>
+<!--A2F59BCF87A341049A180C1BCFF04142-->  <HELP><![CDATA[This check indicates that this file was entered into Etendo through the Copilot chat window. It is used when uploading files by attaching them in the Copilot chat.]]></HELP>
 <!--A2F59BCF87A341049A180C1BCFF04142-->  <COLUMNNAME><![CDATA[EM_ETCPOPP_From_Copilot]]></COLUMNNAME>
 <!--A2F59BCF87A341049A180C1BCFF04142-->  <AD_TABLE_ID><![CDATA[259]]></AD_TABLE_ID>
 <!--A2F59BCF87A341049A180C1BCFF04142-->  <AD_REFERENCE_ID><![CDATA[20]]></AD_REFERENCE_ID>

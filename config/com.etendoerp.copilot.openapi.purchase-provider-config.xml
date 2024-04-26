@@ -2,7 +2,7 @@
 <provider>
   <bean>
       <name>copilotws</name>
-      <class>com.etendoerp.copilot.purchase.ws.copilotWSServlet</class>
+      <class>com.etendoerp.copilot.purchase.ws.CopilotWSServlet</class>
       <singleton>true</singleton>
   </bean>
 </provider>
