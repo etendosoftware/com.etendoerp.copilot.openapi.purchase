@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+  <database name="MODIFIED TABLE C_ORDER">
+    <table name="C_ORDER" primaryKey="C_ORDER_KEY">
+      <column name="EM_ETCPOPP_FROM_COPILOT" primaryKey="false" required="true" type="CHAR" size="1" autoIncrement="false">
+        <default><![CDATA[N]]></default>
+        <onCreateDefault/>
+      </column>
+      <check name="EM_ETCPOPP_FROM_COPT_CHK"><![CDATA[EM_ETCPOPP_FROM_COPILOT IN ('Y', 'N')]]></check>
+    </table>
+  </database>

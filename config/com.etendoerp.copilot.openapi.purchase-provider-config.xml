@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<provider>
+  <bean>
+      <name>copilotws</name>
+      <class>com.etendoerp.copilot.purchase.ws.CopilotWSServlet</class>
+      <singleton>true</singleton>
+  </bean>
+</provider>
