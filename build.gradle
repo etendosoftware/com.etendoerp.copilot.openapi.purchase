@@ -8,12 +8,20 @@
 
 group          = "com.etendoerp"
 version        = "1.0.0"
-description    = "This is a basic module with a generic tool for Interact with API's. A sample tool is implemented to interact with a PetStore API."
+description    = "Copilot App to perform operations related to purchase flows"
 ext.artifact   = "copilot.openapi.purchase"
 ext.repository = "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
 
 configurations {
     moduleDependencyContainer
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDirs("etendo-resources")
+        }
+    }
 }
 
 publishing {
@@ -44,5 +52,7 @@ repositories {
 * Ex: implementation "com.sun.mail:javax.mail:1.6.2"
 */
 dependencies {
-
+    implementation('com.etendoerp:copilot.ocrtool:1.0.0')
+    implementation('com.etendoerp:copilot.openapi:1.0.0')
+    implementation('com.etendoerp:copilot:1.2.6')
 }
