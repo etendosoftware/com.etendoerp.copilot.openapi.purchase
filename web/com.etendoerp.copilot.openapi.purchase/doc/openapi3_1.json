@@ -2086,6 +2086,92 @@
           }
         }
       }
+    },
+    "/sws/com.etendoerp.copilot.openapi.purchase.copilotws/calcTaxes": {
+      "post": {
+        "summary": "Calculate taxes in order lines of a order",
+        "description": "This endpoint calculates the taxes of the order lines of a order. Can receive the ID of the order or the order lines. If the ID of the order is sent, the endpoint will calculate the taxes of all the order lines of the order. If the order line ID is provided, the endpoint will calculate the taxes of the single order line.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Purchase"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "orderId": {
+                    "type": "string",
+                    "description": "The ID of the order.",
+                    "examples": [
+                      "871FE88083AA4C46B867C3CBE84FC7AF"
+                    ]
+                  },
+                  "orderLineId": {
+                    "type": "string",
+                    "description": "The ID of the order line.",
+                    "examples": [
+                      "871FE88083AA4C46B867C3CBE84FC7AF"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A JSON array of objects with messages describing the result of the operation for each order line.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "message": {
+                            "type": "string"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Wrong Endpoint, the correct endpoint is /sws/com.etendoerp.copilot.openapi.purchase.copilotws/searchBySimilarity",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "example": "<html><body><h1>Error 404: Endpoint incorrecto</h1></body></html>"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
