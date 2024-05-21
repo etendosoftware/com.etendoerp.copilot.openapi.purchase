@@ -1,41 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?><ob:Openbravo xmlns:ob="http://www.openbravo.com" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <ETCOP_File id="9ED3C5FE70294FD499A316319DD592FD" identifier="Etendo API Spec">
+    <id>9ED3C5FE70294FD499A316319DD592FD</id>
+    <active>true</active>
+    <name>Etendo API Spec</name>
+    <description xsi:nil="true"/>
+    <type>RF</type>
+    <filename>EtendoOpenAPISpec</filename>
+    <url>@ETENDO_HOST@/web/com.etendoerp.copilot.openapi.purchase/doc/openapi3_1.json</url>
+    <temp>false</temp>
+    <hql xsi:nil="true"/>
+  </ETCOP_File>
   <ETCOP_App_Tool id="156CC687AD7D4AD5AB1F851FEF3A8FC4" identifier="Purchase expert - OCR Tool">
     <id>156CC687AD7D4AD5AB1F851FEF3A8FC4</id>
     <active>true</active>
-    <creationDate transient="true">2024-04-24T17:03:53.584Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
-    <updated transient="true">2024-04-24T17:03:53.584Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
     <copilotTool id="EB58EEA0AA804C219C4D64260550745A" entity-name="ETCOP_Tool" identifier="OCR Tool"/>
-    <copilotApp id="99EF6518D63F4329B775F2A43236D289" entity-name="ETCOP_App" identifier="Purchase expert"/>
-  </ETCOP_App_Tool>
-  <ETCOP_App_Tool id="30C0A8F417BC4ADABA40D60B03E57113" identifier="Purchase expert - Etendo API Tool">
-    <id>30C0A8F417BC4ADABA40D60B03E57113</id>
-    <active>true</active>
-    <creationDate transient="true">2024-04-22T13:50:50.395Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
-    <updated transient="true">2024-04-22T13:50:50.395Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
-    <copilotTool id="41DB506474DC48E88D8C57BFCCEA700D" entity-name="ETCOP_Tool" identifier="Etendo API Tool"/>
     <copilotApp id="99EF6518D63F4329B775F2A43236D289" entity-name="ETCOP_App" identifier="Purchase expert"/>
   </ETCOP_App_Tool>
   <ETCOP_App_Tool id="99A03387045444008CFAB9F12030DDA2" identifier="Purchase expert - API Call tool">
     <id>99A03387045444008CFAB9F12030DDA2</id>
     <active>true</active>
-    <creationDate transient="true">2024-04-22T13:50:50.395Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
-    <updated transient="true">2024-04-22T13:50:50.395Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
     <copilotTool id="F531471DE4E04DA28EF6968EF4C5864B" entity-name="ETCOP_Tool" identifier="API Call tool"/>
     <copilotApp id="99EF6518D63F4329B775F2A43236D289" entity-name="ETCOP_App" identifier="Purchase expert"/>
   </ETCOP_App_Tool>
   <ETCOP_App id="99EF6518D63F4329B775F2A43236D289" identifier="Purchase expert">
     <id>99EF6518D63F4329B775F2A43236D289</id>
     <active>true</active>
-    <creationDate transient="true">2024-04-22T13:50:50.394Z</creationDate>
-    <createdBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
-    <updated transient="true">2024-04-23T09:24:11.485Z</updated>
-    <updatedBy transient="true" id="100" entity-name="ADUser" identifier="Admin"/>
     <name>Purchase expert</name>
     <description xsi:nil="true"/>
     <prompt>You are an expert assistant in Purchases for Etendo. Your main task is to insert purchase orders into the Etendo system.
@@ -69,11 +58,24 @@ The recomendded way is:
 
 Always remember before making a POST to check the body structure for the request using the EtendoAPITool.
 
-The final return message must be a link to order header. "http://localhost:8080/etendo/?tabId=294&amp;recordId={ORDER_HEADER_ID}". The full link, because i want to copy  &amp; paste it.
+All the API calls most be done with the URL: "@ETENDO_HOST@" . Ignoring the URL in the OpenAPI spec. Additionally, all calls to the api have to be made with the token “ETENDO_TOKEN”. Don't try to get it and use that one.
+
+The final return message must be a link to order header. "@ETENDO_HOST@/?tabId=294&amp;recordId={ORDER_HEADER_ID}". The full link, because i want to copy  &amp; paste it.
 </prompt>
     <appType>openai-assistant</appType>
     <syncOpenaiAssistant>true</syncOpenaiAssistant>
     <codeInterpreter>false</codeInterpreter>
     <retrieval>false</retrieval>
+    <provider>O</provider>
+    <module xsi:nil="true"/>
+    <systemApp>false</systemApp>
   </ETCOP_App>
+  <ETCOP_App_Source id="7D5AE053E5164A069D772FE9FA7D2091" identifier="Purchase expert - Etendo API Spec">
+    <id>7D5AE053E5164A069D772FE9FA7D2091</id>
+    <active>true</active>
+    <etcopApp id="99EF6518D63F4329B775F2A43236D289" entity-name="ETCOP_App" identifier="Purchase expert"/>
+    <file id="9ED3C5FE70294FD499A316319DD592FD" entity-name="ETCOP_File" identifier="Etendo API Spec"/>
+    <behaviour>system</behaviour>
+    <openaiIdFile xsi:nil="true"/>
+  </ETCOP_App_Source>
 </ob:Openbravo>
