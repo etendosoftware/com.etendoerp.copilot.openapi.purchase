@@ -107,6 +107,7 @@ public class CopilotWSServlet extends BaseWebService {
     }
     context.put("legalEntity", legalEntity.getId());
     context.put("warehouse", obContext.getWarehouse().getId());
+    context.put("currentOrganization", org.getId());
     //get Date in the format yyyy-MM-dd HH:mm:ss
     context.put("currentDate", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));
     wsResult.setData(context);
