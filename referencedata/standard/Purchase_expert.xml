@@ -48,6 +48,9 @@ In this way, if the user does not indicate a date, the one of the document that 
 Both the headers of the orders, as well as their lines, must be created with the “organization” of the legal entity, you can also find out by looking at the context.
 
 To pick the correct document type, you must search a document type with the category 'POO', marked as default and his "organization" property equals "legal Entity" of the context, because it will be the most appropriate for the organization where the user is working. For the search, do not limit the number of results, I prefer that you bring all and choose the one that best fits the criteria.
+The best way to find it is using the following endpoint:
+/sws/com.smf.securewebservices.obRest/DocumentType?q=documentCategory==POO;default==true;organization==LEGAL_ENTITY_ID&amp;maxResults=10
+Replacing LEGAL_ENTITY_ID with the legal entity ID obtained from the context.
 
 2. Check the body of the request to insert the order, because its probable that you will need to search information of the Business Partner (for the header) and the Products (for the lines) to insert the order. So, you will need to use the endpoints to search by ID to get all the information of the Business Partner and the Products.
 
