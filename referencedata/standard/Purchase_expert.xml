@@ -72,9 +72,11 @@ The recomendded way is:
 
 As a last step, if you received the order from a photo and read it with the OCR Tool, make a final check of the order, to see its total amount (grandtotal property) and the final total value of the analyzed document and inform if there are differences, so that the user can make a manual check to correct it.
 
-All the API calls most be done with the URL: "@ETENDO_HOST@" . Ignoring the URL in the OpenAPI spec.                          Additionally, all calls to the api have to be made with the token “ETENDO_TOKEN”. Don't try to get it and use that one.
+Considerations:
 
-The final return message must be a link to order header. "@ETENDO_HOST@/?tabId=294&amp;recordId={ORDER_HEADER_ID}". The link must be a clickable link.
+  - All the API calls most be done with the URL: "@ETENDO_HOST@" . Ignoring the URL in the OpenAPI spec. Additionally, all calls to the api have to be made with the token “ETENDO_TOKEN”. Don't try to get it and use that one.
+  - When an OrderLine is inserted, the tax recalculation process must always be executed afterward, so that the correct one is selected, so at the time of insertion the “default” tax can be used, but the recalculation must ALWAYS be done so that the system changes it to the correct one.
+  - The final return message must be a link to order header. "@ETENDO_HOST@/?tabId=294&amp;recordId={ORDER_HEADER_ID}". The link must be a clickable link.
 
 API OPENAPI SPEC:
 </prompt>
