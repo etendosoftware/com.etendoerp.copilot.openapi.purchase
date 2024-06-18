@@ -50,13 +50,15 @@
                 "Product",
                 "BusinessPartner",
                 "Organization",
-                "PaymentTerm"
+                "PaymentTerm",
+                "DocumentType"
               ],
               "enum": [
                 "Product",
                 "BusinessPartner",
                 "Organization",
-                "PaymentTerm"
+                "PaymentTerm",
+                "DocumentType"
               ]
             }
           },
@@ -69,6 +71,32 @@
               "type": "string",
               "examples": [
                 "Water"
+              ]
+            }
+          },
+          {
+            "name": "minSimPercent",
+            "in": "query",
+            "required": false,
+            "description": "Minimum percentage (integer) of similarity to be considered a result. By default is 30",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "10",
+                "55"
+              ]
+            }
+          },
+          {
+            "name": "qtyResults",
+            "in": "query",
+            "required": false,
+            "description": "Quantity of results, the first one will be the most similar to the searched term. By default, it is 1.",
+            "schema": {
+              "type": "string",
+              "examples": [
+                "1",
+                "10"
               ]
             }
           }
@@ -113,7 +141,77 @@
               "text/html": {
                 "schema": {
                   "type": "string",
-                  "example": "<html><body><h1>Error 404: Endpoint incorrecto</h1></body></html>"
+                  "examples": [
+                    "<html><body><h1>Error 404: Endpoint incorrecto</h1></body></html>"
+                  ]
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sws/com.etendoerp.copilot.openapi.purchase.copilotws/getContext": {
+      "get": {
+        "summary": "Get contextual information of the logged user",
+        "description": "This endpoint allow to get the contextual information of the logged user. The information returned is the Legal Entity (The proximal organization, that can handle invoices in the Organizational tree where the user is logged), and the current date in the System.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Purchase"
+        ],
+        "responses": {
+          "200": {
+            "description": "A JSON array of objects",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "legalEntity": {
+                            "type": "string",
+                            "description": "Unique identifier for the legal entity"
+                          },
+                          "currentDate": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Current date and time in format yyyy-MM-dd HH:mm:ss"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Wrong Endpoint, the correct endpoint is /sws/com.etendoerp.copilot.openapi.purchase.copilotws/searchBySimilarity",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string",
+                  "examples": [
+                    "<html><body><h1>Error 404: Endpoint incorrecto</h1></body></html>"
+                  ]
                 }
               }
             }
@@ -1521,6 +1619,523 @@
         }
       }
     },
+    "/sws/com.smf.securewebservices.obRest/BusinessPartnerLocation": {
+      "get": {
+        "summary": "List Locations addresses of a Business Partner. This endpoint can be used to get the addresses of a Specific Business Partner usin Q parameter. Example of use: http://localhost:8080/etendo/sws/com.smf.securewebservices.obRest/BusinessPartnerLocation?q=businessPartner==BPARTNER_ID&maxResults=10",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Purchase"
+        ],
+        "parameters": [
+          {
+            "name": "firstResult",
+            "in": "query",
+            "description": "First result, pagination use.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "examples": [
+                "0"
+              ]
+            }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "required": true,
+            "description": "Total number of results, used for pagination. E.g. If firstResult is 0, and maxResults is 4, then it will return 4 records starting the count from 0 (Records 0, 1, 2 and 3). Therefore, if firstResult is 10 and maxResults is 3, it will return the records 10, 11 and 12",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "examples": [
+                4
+              ]
+            }
+          },
+          {
+            "name": "distinct",
+            "in": "query",
+            "required": false,
+            "description": "Only filters by entities. Returns the specified entity from the model.",
+            "schema": {
+              "type": "string",
+              "examplea": [
+                "Organization"
+              ]
+            }
+          },
+          {
+            "name": "identifiers",
+            "in": "query",
+            "required": true,
+            "description": "Include identifiers.",
+            "schema": {
+              "type": "boolean",
+              "examplea": [
+                true
+              ],
+              "default": true
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "The \"Q\" parameter allows you to apply clauses to filter records based on specific criteria. For more information check <a href=\"https://etendoproject.atlassian.net/wiki/spaces/PUB/pages/3057614854/How+to+filter+using+the+q+parameter+in+SecureWebServices\">the following documentation</a>.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "uOM == '100'"
+              ]
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Clause order by in HQL. Field/s with which to sort the results.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Fields to select separated by commas.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "id, name"
+              ]
+            }
+          },
+          {
+            "name": "noActive",
+            "in": "query",
+            "description": "If it is true, non-active records will also be returned.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "examples": [
+                true
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of object from Etendo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_entityName": {
+                            "type": "string",
+                            "description": "Entity name"
+                          },
+                          "id": {
+                            "type": "string",
+                            "description": "Unique identifier for the location"
+                          },
+                          "client": {
+                            "type": "string",
+                            "description": "Client ID"
+                          },
+                          "organization": {
+                            "type": "string",
+                            "description": "Organization ID"
+                          },
+                          "active": {
+                            "type": "boolean",
+                            "description": "Indicates if the location is active"
+                          },
+                          "creationDate": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Date when the location was created"
+                          },
+                          "createdBy": {
+                            "type": "string",
+                            "description": "ID of the user who created the location"
+                          },
+                          "updated": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Date when the location was last updated"
+                          },
+                          "updatedBy": {
+                            "type": "string",
+                            "description": "ID of the user who last updated the location"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Name or address of the location"
+                          },
+                          "invoiceToAddress": {
+                            "type": "boolean",
+                            "description": "Indicates if this address is used for invoices"
+                          },
+                          "shipToAddress": {
+                            "type": "boolean",
+                            "description": "Indicates if this address is used for shipping/orders"
+                          },
+                          "payFromAddress": {
+                            "type": "boolean",
+                            "description": "Indicates if this address is used for payments"
+                          },
+                          "remitToAddress": {
+                            "type": "boolean",
+                            "description": "Indicates if this address is used for remittances"
+                          },
+                          "phone": {
+                            "type": "string",
+                            "description": "Phone number"
+                          },
+                          "alternativePhone": {
+                            "type": "string",
+                            "description": "Alternative phone number",
+                            "nullable": true
+                          },
+                          "fax": {
+                            "type": "string",
+                            "description": "Fax number",
+                            "nullable": true
+                          },
+                          "salesRegion": {
+                            "type": "string",
+                            "description": "Sales region",
+                            "nullable": true
+                          },
+                          "businessPartner": {
+                            "type": "string",
+                            "description": "Business partner ID"
+                          },
+                          "locationAddress": {
+                            "type": "string",
+                            "description": "Location address ID"
+                          },
+                          "taxLocation": {
+                            "type": "boolean",
+                            "description": "Indicates if this is a tax location"
+                          },
+                          "uPCEAN": {
+                            "type": "string",
+                            "description": "UPC/EAN code",
+                            "nullable": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sws/com.smf.securewebservices.obRest/DocumentType": {
+      "get": {
+        "summary": "List Document Types availables. It can be used to filter by specific document types using the Q parameter. Example of use: /sws/com.smf.securewebservices.obRest/DocumentType?q=documentCategory==POO;default==true&maxResults=10 being POO the document category for Purchase Orders and default the boolean field to indicate if it is the default document type. The maxResults parameter is mandatory and used for pagination.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "tags": [
+          "Purchase"
+        ],
+        "parameters": [
+          {
+            "name": "firstResult",
+            "in": "query",
+            "description": "First result, pagination use.",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "examples": [
+                "0"
+              ]
+            }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "required": true,
+            "description": "Total number of results, used for pagination. E.g. If firstResult is 0, and maxResults is 4, then it will return 4 records starting the count from 0 (Records 0, 1, 2 and 3). Therefore, if firstResult is 10 and maxResults is 3, it will return the records 10, 11 and 12",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "examples": [
+                4
+              ]
+            }
+          },
+          {
+            "name": "distinct",
+            "in": "query",
+            "required": false,
+            "description": "Only filters by entities. Returns the specified entity from the model.",
+            "schema": {
+              "type": "string",
+              "examplea": [
+                "Organization"
+              ]
+            }
+          },
+          {
+            "name": "identifiers",
+            "in": "query",
+            "required": true,
+            "description": "Include identifiers.",
+            "schema": {
+              "type": "boolean",
+              "examplea": [
+                true
+              ],
+              "default": true
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "The \"Q\" parameter allows you to apply clauses to filter records based on specific criteria. For more information check <a href=\"https://etendoproject.atlassian.net/wiki/spaces/PUB/pages/3057614854/How+to+filter+using+the+q+parameter+in+SecureWebServices\">the following documentation</a>.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "uOM == '100'"
+              ]
+            }
+          },
+          {
+            "name": "sortBy",
+            "in": "query",
+            "description": "Clause order by in HQL. Field/s with which to sort the results.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "Fields to select separated by commas.",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "id, name"
+              ]
+            }
+          },
+          {
+            "name": "noActive",
+            "in": "query",
+            "description": "If it is true, non-active records will also be returned.",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "examples": [
+                true
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of object from Etendo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "_entityName": {
+                            "type": "string",
+                            "description": "Entity name"
+                          },
+                          "id": {
+                            "type": "string",
+                            "description": "Unique identifier for the document type"
+                          },
+                          "client": {
+                            "type": "string",
+                            "description": "Client ID"
+                          },
+                          "organization": {
+                            "type": "string",
+                            "description": "Organization ID"
+                          },
+                          "active": {
+                            "type": "boolean",
+                            "description": "Indicates if the document type is active"
+                          },
+                          "creationDate": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Date when the document type was created"
+                          },
+                          "createdBy": {
+                            "type": "string",
+                            "description": "ID of the user who created the document type"
+                          },
+                          "updated": {
+                            "type": "string",
+                            "format": "date-time",
+                            "description": "Date when the document type was last updated"
+                          },
+                          "updatedBy": {
+                            "type": "string",
+                            "description": "ID of the user who last updated the document type"
+                          },
+                          "name": {
+                            "type": "string",
+                            "description": "Name of the document type"
+                          },
+                          "printText": {
+                            "type": "string",
+                            "description": "Text to be printed on the document"
+                          },
+                          "description": {
+                            "type": "string",
+                            "description": "Description of the document type",
+                            "nullable": true
+                          },
+                          "documentCategory": {
+                            "type": "string",
+                            "description": "Category of the document"
+                          },
+                          "salesTransaction": {
+                            "type": "boolean",
+                            "description": "Indicates if this document type is for sales transactions"
+                          },
+                          "sOSubType": {
+                            "type": "string",
+                            "description": "Subtype for sales order",
+                            "nullable": true
+                          },
+                          "documentTypeForShipment": {
+                            "type": "string",
+                            "description": "Document type for shipment"
+                          },
+                          "documentTypeForInvoice": {
+                            "type": "string",
+                            "description": "Document type for invoice"
+                          },
+                          "sequencedDocument": {
+                            "type": "boolean",
+                            "description": "Indicates if this document type is sequenced"
+                          },
+                          "documentSequence": {
+                            "type": "string",
+                            "description": "Document sequence ID"
+                          },
+                          "gLCategory": {
+                            "type": "string",
+                            "description": "GL category ID"
+                          },
+                          "comments": {
+                            "type": "string",
+                            "description": "Comments",
+                            "nullable": true
+                          },
+                          "default": {
+                            "type": "boolean",
+                            "description": "Indicates if this is the default document type"
+                          },
+                          "numberOfCopies": {
+                            "type": "integer",
+                            "description": "Number of copies"
+                          },
+                          "table": {
+                            "type": "string",
+                            "description": "Table ID"
+                          },
+                          "filterByOrganization": {
+                            "type": "boolean",
+                            "description": "Indicates if the document type is filtered by organization"
+                          },
+                          "documentCancelled": {
+                            "type": "string",
+                            "description": "Indicates if the document is cancelled",
+                            "nullable": true
+                          },
+                          "expense": {
+                            "type": "boolean",
+                            "description": "Indicates if the document type is for expenses"
+                          },
+                          "reversal": {
+                            "type": "boolean",
+                            "description": "Indicates if the document type is for reversals"
+                          },
+                          "return": {
+                            "type": "boolean",
+                            "description": "Indicates if the document type is for returns"
+                          },
+                          "documentTypeForOrder": {
+                            "type": "string",
+                            "description": "Document type for order",
+                            "nullable": true
+                          },
+                          "doctypesimpinvoice": {
+                            "type": "string",
+                            "description": "Document type for simplified invoice"
+                          },
+                          "doctypeaggrinvoice": {
+                            "type": "string",
+                            "description": "Document type for aggregated invoice"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "unexpected error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/sws/com.smf.securewebservices.obRest/Order": {
       "get": {
         "summary": "List Order Header records",
@@ -1674,6 +2289,11 @@
                   "data": {
                     "type": "object",
                     "properties": {
+                      "organization": {
+                        "type": "string",
+                        "description": "The ID of the organization to which the order belongs. It is recommended that it be an organization with legal entity, for invoicing purposes.",
+                        "required": true
+                      },
                       "orderDate": {
                         "type": "string",
                         "format": "date",
@@ -1706,29 +2326,26 @@
                       },
                       "documentType": {
                         "type": "string",
-                        "description": "The type of document for the order. Use 'AB22CE8FFA5E4AF29F2AC90FCDD400D8' for this order.",
+                        "description": "The type of document for the order. If you don't know the document type, ask it.",
                         "examples": [
                           "AB22CE8FFA5E4AF29F2AC90FCDD400D8"
                         ],
-                        "default": "AB22CE8FFA5E4AF29F2AC90FCDD400D8",
                         "required": true
                       },
                       "transactionDocument": {
                         "type": "string",
-                        "description": "Transaction document for the order. Utilize 'AB22CE8FFA5E4AF29F2AC90FCDD400D8' for this transaction.",
+                        "description": "Transaction document for the order. The same as documentType.",
                         "examples": [
                           "AB22CE8FFA5E4AF29F2AC90FCDD400D8"
                         ],
-                        "default": "AB22CE8FFA5E4AF29F2AC90FCDD400D8",
                         "required": true
                       },
                       "partnerAddress": {
                         "type": "string",
-                        "description": "Supplier's address. For now, use '1F38687D74244B369F0B16B3858CD256'.",
+                        "description": "Supplier's address. Can be obtained from the BusinessPartner, property: 'address'.",
                         "examples": [
                           "1F38687D74244B369F0B16B3858CD256"
                         ],
-                        "default": "1F38687D74244B369F0B16B3858CD256",
                         "required": true
                       },
                       "currency": {
@@ -1756,11 +2373,10 @@
                       },
                       "warehouse": {
                         "type": "string",
-                        "description": "Warehouse where the order will be stored. Use 'B2D40D8A5D644DD89E329DC297309055' for this order.",
+                        "description": "Warehouse where the order will be stored.You must use the warehouse of your context. If you don't know the warehouse, ask it.",
                         "examples": [
                           "B2D40D8A5D644DD89E329DC297309055"
                         ],
-                        "default": "B2D40D8A5D644DD89E329DC297309055",
                         "required": true
                       },
                       "priceList": {
