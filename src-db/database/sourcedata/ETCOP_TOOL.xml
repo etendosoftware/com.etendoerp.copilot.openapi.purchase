@@ -93,7 +93,7 @@
 <!--C816B0D4763B41D0BACE39A8CDA573BC-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
 <!--C816B0D4763B41D0BACE39A8CDA573BC-->  <CREATED><![CDATA[2024-06-17 12:10:00.663]]></CREATED>
 <!--C816B0D4763B41D0BACE39A8CDA573BC-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
-<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <UPDATED><![CDATA[2024-06-18 10:56:26.58]]></UPDATED>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <UPDATED><![CDATA[2024-07-16 17:33:50.707]]></UPDATED>
 <!--C816B0D4763B41D0BACE39A8CDA573BC-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
 <!--C816B0D4763B41D0BACE39A8CDA573BC-->  <VALUE><![CDATA[AttachFileTool]]></VALUE>
 <!--C816B0D4763B41D0BACE39A8CDA573BC-->  <NAME><![CDATA[Attach File Tool]]></NAME>
@@ -113,12 +113,12 @@
           "type": "string"
         },
         "ad_tab_id": {
-          "description": "The ID of the tab",
+          "description": "A string of 32 chars which is the ID of the Tab",
           "title": "Ad Tab Id",
-          "type": "integer"
+          "type": "string"
         },
         "record_id": {
-          "description": "An String of 32 chars which is ID of the record ",
+          "description": "A string of 32 chars which is the ID of the record",
           "title": "Record Id",
           "type": "string"
         }

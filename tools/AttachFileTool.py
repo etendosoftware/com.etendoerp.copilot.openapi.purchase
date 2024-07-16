@@ -12,7 +12,7 @@ from copilot.core.utils import copilot_debug
 
 class AttachFileInput(BaseModel):
     filepath: str = Field(description="The path of the file to upload")
-    ad_tab_id: int = Field(description="The ID of the tab")
+    ad_tab_id: str = Field(description="A string of 32 chars which is the ID of the Tab")
     record_id: str = Field(description="A string of 32 chars which is the ID of the record")
 
 

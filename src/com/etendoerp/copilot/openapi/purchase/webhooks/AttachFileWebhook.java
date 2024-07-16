@@ -21,19 +21,19 @@ public class AttachFileWebhook extends BaseWebhookService {
   public void get(Map<String, String> parameter, Map<String, String> responseVars) {
     log.info("Executing AttachmentWebHook process");
 
-    String adTableId = parameter.get("ADTabId");
+    String adTabId = parameter.get("ADTabId");
     String recordId = parameter.get("RecordId");
     String fileName = parameter.get("FileName");
     String fileContent = parameter.get("FileContent");
 
-    if (adTableId == null || recordId == null || fileContent == null || fileName == null) {
+    if (adTabId == null || recordId == null || fileContent == null || fileName == null) {
       responseVars.put("error", "Missing required parameters");
       return;
     }
 
     try {
       File file = storeBase64ToTempFile(fileContent, fileName);
-      createAttachment(adTableId, recordId, fileName, file);
+      createAttachment(adTabId, recordId, fileName, file);
       responseVars.put("message", "Attachment created successfully");
     } catch (Exception e) {
       log.error("Error creating attachment", e);
@@ -55,11 +55,11 @@ public class AttachFileWebhook extends BaseWebhookService {
     return tempFile;
   }
 
-  private void createAttachment(String adTableId, String recordId, String fileName, File file) {
+  private void createAttachment(String adTabId, String recordId, String fileName, File file) {
     try {
       AttachImplementationManager aim = WeldUtils.getInstanceFromStaticBeanManager(
           AttachImplementationManager.class);
-      aim.upload(new HashMap<>(), adTableId, recordId, fileName, file);
+      aim.upload(new HashMap<>(), adTabId, recordId, fileName, file);
     } catch (Exception e) {
       OBDal.getInstance().rollbackAndClose();
       throw e;
