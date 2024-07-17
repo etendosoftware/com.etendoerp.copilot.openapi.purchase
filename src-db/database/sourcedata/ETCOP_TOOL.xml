@@ -86,4 +86,47 @@
 <!--9E176066064843AFBAABDF7606BBB533-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
 <!--9E176066064843AFBAABDF7606BBB533--></ETCOP_TOOL>
 
+<!--C816B0D4763B41D0BACE39A8CDA573BC--><ETCOP_TOOL>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <ETCOP_TOOL_ID><![CDATA[C816B0D4763B41D0BACE39A8CDA573BC]]></ETCOP_TOOL_ID>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <AD_CLIENT_ID><![CDATA[0]]></AD_CLIENT_ID>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <AD_ORG_ID><![CDATA[0]]></AD_ORG_ID>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <ISACTIVE><![CDATA[Y]]></ISACTIVE>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <CREATED><![CDATA[2024-06-17 12:10:00.663]]></CREATED>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <CREATEDBY><![CDATA[100]]></CREATEDBY>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <UPDATED><![CDATA[2024-07-16 17:33:50.707]]></UPDATED>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <UPDATEDBY><![CDATA[100]]></UPDATEDBY>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <VALUE><![CDATA[AttachFileTool]]></VALUE>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <NAME><![CDATA[Attach File Tool]]></NAME>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <DESCRIPTION><![CDATA[Uploads a file to an API after checking its existence and accessibility.]]></DESCRIPTION>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <AD_MODULE_ID><![CDATA[FC09D08355EF448585E8FA0C9E8D2B85]]></AD_MODULE_ID>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <JSON_STRUCTURE><![CDATA[{
+  "type": "function",
+  "function": {
+    "name": "AttachFileTool",
+    "description": "Uploads a file to an API after checking its existence and accessibility.",
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "filepath": {
+          "description": "The path of the file to upload",
+          "title": "Filepath",
+          "type": "string"
+        },
+        "ad_tab_id": {
+          "description": "A string of 32 chars which is the ID of the Tab",
+          "title": "Ad Tab Id",
+          "type": "string"
+        },
+        "record_id": {
+          "description": "A string of 32 chars which is the ID of the record",
+          "title": "Record Id",
+          "type": "string"
+        }
+      }
+    }
+  }
+}]]></JSON_STRUCTURE>
+<!--C816B0D4763B41D0BACE39A8CDA573BC-->  <SYNC_STRUCTURE><![CDATA[N]]></SYNC_STRUCTURE>
+<!--C816B0D4763B41D0BACE39A8CDA573BC--></ETCOP_TOOL>
+
 </data>
