@@ -5,7 +5,7 @@ from typing import Type, Optional, Dict
 from pydantic import BaseModel, Field
 
 from copilot.core import utils
-from copilot.core.threadcontext import ThreadContext
+from copilot.core.etendo_utils import call_webhook, get_etendo_token
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils import copilot_debug
 
@@ -34,22 +34,23 @@ class AttachFileTool(ToolWrapper):
         ad_tab_id = input_params.get('ad_tab_id')
         record_id = input_params.get('record_id')
 
+        full_file_path = '/app' + filepath
+        copilot_debug(f"Tool AttachTool input: {full_file_path}")
+        copilot_debug(f"Current directory: {os.getcwd()}")
+        if not os.path.isfile(full_file_path) or not os.access(full_file_path, os.R_OK):
+            full_file_path = '..' + filepath
+        if not os.path.isfile(full_file_path) or not os.access(full_file_path, os.R_OK):
+            full_file_path = filepath
         # Check if the file exists and is accessible
-        if not os.path.isfile(filepath) or not os.access(filepath, os.R_OK):
+        if not os.path.isfile(full_file_path) or not os.access(full_file_path, os.R_OK):
             return {"error": "File does not exist or is not accessible"}
 
         # Read the file and encode it in base64
-        with open(filepath, "rb") as file:
+        with open(full_file_path, "rb") as file:
             file_content = file.read()
             file_base64 = base64.b64encode(file_content).decode('utf-8')
         file_name = os.path.basename(filepath)
-        extra_info = ThreadContext.get_data('extra_info')
-        if extra_info is None or extra_info.get('auth') is None or extra_info.get('auth').get('ETENDO_TOKEN') is None:
-            return {"error": "No access token provided, to work with Etendo, an access token is required."
-                             "Make sure that the Webservices are enabled to the user role and the WS are configured for"
-                             " the Entity."
-                    }
-        access_token = extra_info.get('auth').get('ETENDO_TOKEN')
+        access_token = get_etendo_token()
         etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
         return attach_file(etendo_host, access_token, ad_tab_id, record_id, file_name, file_base64)
@@ -65,22 +66,6 @@ def attach_file(url, access_token, ad_tab_id, record_id, file_name, file_base64)
     }
     post_result = call_webhook(access_token, body_params, url, webhook_name)
     return post_result
-
-
-def call_webhook(access_token, body_params, url, webhook_name):
-    import requests
-    headers = _get_headers(access_token)
-    endpoint = "/webhooks/?name=" + webhook_name
-    import json
-    json_data = json.dumps(body_params)
-    full_url = (url + endpoint)
-    copilot_debug(f"Calling Webhook(POST): {full_url}")
-    post_result = requests.post(url=full_url, data=json_data, headers=headers)
-    if post_result.ok:
-        return json.loads(post_result.text)
-    else:
-        copilot_debug(post_result.text)
-        return {"error": post_result.text}
 
 
 def _get_headers(access_token: Optional[str]) -> Dict:
