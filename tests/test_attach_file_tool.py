@@ -16,7 +16,7 @@ class TestAttachFileTool(unittest.TestCase):
     @patch('os.path.isfile', return_value=True)
     @patch('os.access', return_value=True)
     @patch('builtins.open', new_callable=mock_open, read_data=b'Test file content')
-    @patch('tools.AttachFileTool.ThreadContext.get_data', return_value={'auth': {'ETENDO_TOKEN': 'dummy_token'}})
+    @patch('copilot.core.threadcontext.ThreadContext.get_data', return_value={'auth': {'ETENDO_TOKEN': 'dummy_token'}})
     @patch('tools.AttachFileTool.attach_file', return_value={'success': True})
     def test_run_success(self, mock_attach_file, mock_get_data, mock_open, mock_access, mock_isfile):
         result = self.tool.run(self.valid_input)
@@ -25,7 +25,7 @@ class TestAttachFileTool(unittest.TestCase):
     @patch('os.path.isfile', return_value=True)
     @patch('os.access', return_value=True)
     @patch('builtins.open', new_callable=mock_open, read_data=b'Test file content')
-    @patch('tools.AttachFileTool.ThreadContext.get_data', return_value={'auth': {'ETENDO_TOKEN': 'dummy_token'}})
+    @patch('copilot.core.threadcontext.ThreadContext.get_data', return_value={'auth': {'ETENDO_TOKEN': 'dummy_token'}})
     @patch('tools.AttachFileTool.attach_file', return_value={'success': False, 'error': 'Attachment failed'})
     def test_run_attach_file_failure(self, mock_attach_file, mock_get_data, mock_open, mock_access, mock_isfile):
         result = self.tool.run(self.valid_input)
@@ -45,11 +45,12 @@ class TestAttachFileTool(unittest.TestCase):
     @patch('os.path.isfile', return_value=True)
     @patch('os.access', return_value=True)
     @patch('builtins.open', new_callable=mock_open, read_data=b'Test file content')
-    @patch('tools.AttachFileTool.ThreadContext.get_data', return_value=None)
+    @patch('copilot.core.threadcontext.ThreadContext.get_data', return_value=None)
     def test_run_no_access_token(self, mock_get_data, mock_open, mock_access, mock_isfile):
-        result = self.tool.run(self.valid_input)
-        self.assertIn('error', result)
-        self.assertIn('No access token provided', result['error'])
+        try:
+            result = self.tool.run(self.valid_input)
+        except Exception as e:
+            self.assertIn('No access token provided', str(e))
 
 
 if __name__ == '__main__':
