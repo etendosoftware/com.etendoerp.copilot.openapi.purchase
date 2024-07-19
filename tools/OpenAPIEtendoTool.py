@@ -6,7 +6,8 @@ from langchain_community.agent_toolkits.openapi.spec import reduce_openapi_spec
 from langchain_community.chat_models import ChatOpenAI
 from langchain_community.utilities import RequestsWrapper
 from langchain_core.tools import Tool
-from pydantic import BaseModel, Field
+from langchain_core.pydantic_v1 import Field, BaseModel
+
 
 from copilot.core import utils
 from copilot.core.tool_wrapper import ToolWrapper

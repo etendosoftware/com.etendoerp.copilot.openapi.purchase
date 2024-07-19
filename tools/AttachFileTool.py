@@ -2,7 +2,7 @@ import base64
 import os
 from typing import Type, Optional, Dict
 
-from pydantic import BaseModel, Field
+from langchain_core.pydantic_v1 import Field, BaseModel
 
 from copilot.core import utils
 from copilot.core.etendo_utils import call_webhook, get_etendo_token
