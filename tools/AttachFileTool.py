@@ -2,18 +2,17 @@ import base64
 import os
 from typing import Type, Optional, Dict
 
-from pydantic import BaseModel, Field
-
 from copilot.core import utils
 from copilot.core.etendo_utils import call_webhook, get_etendo_token
+from copilot.core.tool_input import ToolInput, ToolField
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils import copilot_debug
 
 
-class AttachFileInput(BaseModel):
-    filepath: str = Field(description="The path of the file to upload")
-    ad_tab_id: str = Field(description="A string of 32 chars which is the ID of the Tab")
-    record_id: str = Field(description="A string of 32 chars which is the ID of the record")
+class AttachFileInput(ToolInput):
+    filepath: str = ToolField(description="The path of the file to upload")
+    ad_tab_id: str = ToolField(description="A string of 32 chars which is the ID of the Tab")
+    record_id: str = ToolField(description="A string of 32 chars which is the ID of the record")
 
 
 class AttachFileTool(ToolWrapper):
@@ -26,7 +25,7 @@ class AttachFileTool(ToolWrapper):
 
     name = "AttachFileTool"
     description = "Uploads a file to an API after checking its existence and accessibility."
-    args_schema: Type[BaseModel] = AttachFileInput
+    args_schema: Type[ToolInput] = AttachFileInput
     return_direct: bool = False
 
     def run(self, input_params: Dict, *args, **kwargs) -> str:
@@ -73,7 +72,7 @@ def _get_headers(access_token: Optional[str]) -> Dict:
     This method generates headers for an HTTP request.
 
     Parameters:
-    access_token (str, optional): The access token to be included in the headers. If provided, an 'Authorization' field
+    access_token (str, optional): The access token to be included in the headers. If provided, an 'Authorization' ToolField
      is added to the headers with the value 'Bearer {access_token}'.
 
     Returns:

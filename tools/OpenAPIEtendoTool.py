@@ -5,10 +5,9 @@ from typing import Dict, Final, Type, Optional
 from langchain_community.agent_toolkits.openapi.spec import reduce_openapi_spec
 from langchain_community.chat_models import ChatOpenAI
 from langchain_community.utilities import RequestsWrapper
-from langchain_core.tools import Tool
-from pydantic import BaseModel, Field
 
 from copilot.core import utils
+from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils import copilot_debug
 
@@ -17,8 +16,8 @@ Do not use this tool as a reference, it is not working, it is just a draft.
 """
 
 
-class OpenAPIEtendoToolInput(BaseModel):
-    question_prompt: str = Field(description="The question/request prompt to be asked to the OpenAPI specification")
+class OpenAPIEtendoToolInput(ToolInput):
+    question_prompt: str = ToolField(description="The question/request prompt to be asked to the OpenAPI specification")
 
 
 def _get_headers(access_token: Optional[str]) -> Dict:
@@ -84,7 +83,7 @@ class OpenAPIEtendoTool(ToolWrapper):
     name = "OpenAPIEtendoTool"
     description = (''' This Tool, based on the OpenAPI specification, allows you to interact with the ETENDO API.
     ''')
-    args_schema: Type[BaseModel] = OpenAPIEtendoToolInput
+    args_schema: Type[ToolInput] = OpenAPIEtendoToolInput
 
     def run(self, input_params, *args, **kwargs):
 

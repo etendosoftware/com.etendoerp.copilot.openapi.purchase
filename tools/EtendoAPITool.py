@@ -3,25 +3,22 @@ import threading
 from typing import Dict, Final, Type, Optional
 
 from langchain_community.agent_toolkits.openapi.spec import reduce_openapi_spec
-from langchain_community.chat_models import ChatOpenAI
-from langchain_community.utilities import RequestsWrapper
-from langchain_core.tools import Tool
-from pydantic import BaseModel, Field
 
 from copilot.core import utils
 from copilot.core.threadcontext import ThreadContext
+from copilot.core.tool_input import ToolField, ToolInput
 from copilot.core.tool_wrapper import ToolWrapper
 from copilot.core.utils import copilot_debug
 
 
-class EtendoAPIToolInput(BaseModel):
-    tag: Optional[str] = Field(None,
-                               description="The tag of the API endpoints we want to get the information. If provided, returns the information of the endpoints with that tag( filter by tag). If not provided, no filter is applied. If the endpoint is provided, the tag parameter is ignored."
-                               )
-    endpoint: Optional[str] = Field(None,
-                                    description="The endpoint of the API we want to get the information. If not provided, returns the general information of the API, listing all the endpoints. With description of each endpoint,but without the parameters or responses. "
-                                                "It needs to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint GET of the path /example, we need to provide the parameter endpoint with the value 'GET /example'. If the endpoint is provided, returns the information of that endpoint, with the parameters and responses."
-                                    )
+class EtendoAPIToolInput(ToolInput):
+    tag: Optional[str] = ToolField(None,
+                                   description="The tag of the API endpoints we want to get the information. If provided, returns the information of the endpoints with that tag( filter by tag). If not provided, no filter is applied. If the endpoint is provided, the tag parameter is ignored."
+                                   )
+    endpoint: Optional[str] = ToolField(None,
+                                        description="The endpoint of the API we want to get the information. If not provided, returns the general information of the API, listing all the endpoints. With description of each endpoint,but without the parameters or responses. "
+                                                    "It needs to include the Method and the Path of the endpoint. For example, if we want to get the information of the endpoint GET of the path /example, we need to provide the parameter endpoint with the value 'GET /example'. If the endpoint is provided, returns the information of that endpoint, with the parameters and responses."
+                                        )
 
 
 def _get_headers(access_token: Optional[str]) -> Dict:
@@ -219,7 +216,7 @@ class EtendoAPITool(ToolWrapper):
     but without the parameters or responses. If the endpoint is provided, returns the information of that endpoint, with the
     parameters and responses.
     ''')
-    args_schema: Type[BaseModel] = EtendoAPIToolInput
+    args_schema: Type[ToolInput] = EtendoAPIToolInput
 
     def run(self, input_params, *args, **kwargs):
         """
