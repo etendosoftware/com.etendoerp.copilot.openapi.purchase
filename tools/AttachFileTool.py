@@ -52,19 +52,18 @@ class AttachFileTool(ToolWrapper):
         access_token = get_etendo_token()
         etendo_host = utils.read_optional_env_var("ETENDO_HOST", "http://host.docker.internal:8080/etendo")
         copilot_debug(f"ETENDO_HOST: {etendo_host}")
-        return attach_file(etendo_host, access_token, ad_tab_id, record_id, file_name, file_base64)
+        return self.attach_file(etendo_host, access_token, ad_tab_id, record_id, file_name, file_base64)
 
-
-def attach_file(url, access_token, ad_tab_id, record_id, file_name, file_base64):
-    webhook_name = "AttachFile"
-    body_params = {
-        "ADTabId": ad_tab_id,
-        "RecordId": record_id,
-        "FileName": file_name,
-        "FileContent": file_base64
-    }
-    post_result = call_webhook(access_token, body_params, url, webhook_name)
-    return post_result
+    def attach_file(self, url, access_token, ad_tab_id, record_id, file_name, file_base64):
+        webhook_name = "AttachFile"
+        body_params = {
+            "ADTabId": ad_tab_id,
+            "RecordId": record_id,
+            "FileName": file_name,
+            "FileContent": file_base64
+        }
+        post_result = call_webhook(access_token, body_params, url, webhook_name)
+        return post_result
 
 
 def _get_headers(access_token: Optional[str]) -> Dict:
