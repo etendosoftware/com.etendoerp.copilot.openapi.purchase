@@ -132,7 +132,7 @@ public class CopilotWSServlet extends BaseWebService {
    * @throws IllegalAccessException
    *     If the currently executing method does not have access to the definition of the specified field.
    */
-  private WSResult handleSimSearch(
+  public static WSResult handleSimSearch(
       Map<String, String> requestParams) throws JSONException, NoSuchFieldException, IllegalAccessException {
     String searchTerm = requestParams.get("searchTerm");
     String entityName = requestParams.get("entityName");
@@ -227,7 +227,7 @@ public class CopilotWSServlet extends BaseWebService {
    * @throws IllegalAccessException
    *     If the currently executing method does not have access to the definition of the specified field.
    */
-  private <T extends BaseOBObject> JSONArray searchEntities(Class<T> entityClass, String whereOrderByClause2,
+  private static <T extends BaseOBObject> JSONArray searchEntities(Class<T> entityClass, String whereOrderByClause2,
       String searchTerm, int qtyResults) throws JSONException, NoSuchFieldException, IllegalAccessException {
 
     OBQuery<T> searchQuery = OBDal.getInstance().createQuery(entityClass, whereOrderByClause2);
@@ -249,7 +249,7 @@ public class CopilotWSServlet extends BaseWebService {
     return arrayResponse;
   }
 
-  private BigDecimal calcSimilarityPercent(String id, String searchTerm, String tableName) {
+  private static BigDecimal calcSimilarityPercent(String id, String searchTerm, String tableName) {
     String sql = String.format("select etcpopp_sim_search('%s', '%s', '%s')", tableName, id, searchTerm);
     Query query = OBDal.getInstance().getSession().createSQLQuery(sql);
     ScrollableResults scroll = query.scroll(ScrollMode.FORWARD_ONLY);
