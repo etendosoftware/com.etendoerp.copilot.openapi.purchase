@@ -307,7 +307,7 @@ public class CopilotWSServlet extends BaseWebService {
     return wsResult;
   }
 
-  private String recalcTaxes(OrderLine orderLine) {
+  public static String recalcTaxes(OrderLine orderLine) {
     try {
       Order order = orderLine.getSalesOrder();
       BigDecimal priceActual;
@@ -389,7 +389,7 @@ public class CopilotWSServlet extends BaseWebService {
     return "Taxes recalculated successfully.";
   }
 
-  private void taxSearchAndSet(OrderLine ol, Order order, Product product) throws ServletException, IOException {
+  private static void taxSearchAndSet(OrderLine ol, Order order, Product product) throws ServletException, IOException {
     //formate order.getOrderDate to string year-month-day. Dont use FormatUtilities
     String dateFromat = OBPropertiesProvider.getInstance().getOpenbravoProperties().getProperty("dateFormat.java");
     SimpleDateFormat dateformat = new SimpleDateFormat(dateFromat);
