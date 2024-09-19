@@ -49,7 +49,11 @@ import com.smf.securewebservices.service.BaseWebService;
 import com.smf.securewebservices.utils.WSResult;
 import com.smf.securewebservices.utils.WSResult.Status;
 
-
+/**
+ * Web service servlet class for handling various operations related to the Copilot module.
+ * It extends the BaseWebService and supports operations such as searching by similarity
+ * and recalculating taxes for orders.
+ */
 public class CopilotWSServlet extends BaseWebService {
 
   public static final int MIN_SIM_PERCENT = 30;
@@ -94,6 +98,14 @@ public class CopilotWSServlet extends BaseWebService {
     }
   }
 
+  /**
+   * Handles the retrieval of context information from the system.
+   * It includes details like the current organization, client, warehouse, and the current date.
+   *
+   * @return a WSResult object containing the context information.
+   * @throws JSONException
+   *     if there is an error creating the JSON response.
+   */
   private WSResult handleGetContext() throws JSONException {
     WSResult wsResult = new WSResult();
     wsResult.setStatus(Status.OK);
@@ -249,6 +261,17 @@ public class CopilotWSServlet extends BaseWebService {
     return arrayResponse;
   }
 
+  /**
+   * Calculates the similarity percentage between a provided ID and a search term for a specific table.
+   *
+   * @param id
+   *     the ID of the entity.
+   * @param searchTerm
+   *     the search term to compare against.
+   * @param tableName
+   *     the name of the table where the entity belongs.
+   * @return the similarity percentage as a BigDecimal.
+   */
   private static BigDecimal calcSimilarityPercent(String id, String searchTerm, String tableName) {
     String sql = String.format("select etcpopp_sim_search('%s', '%s', '%s')", tableName, id, searchTerm);
     Query query = OBDal.getInstance().getSession().createSQLQuery(sql);
@@ -258,6 +281,20 @@ public class CopilotWSServlet extends BaseWebService {
     return percent.setScale(4, RoundingMode.HALF_UP);
   }
 
+  /**
+   * Handles POST requests to the web service.
+   * If the path matches "/calcTaxes", it recalculates the taxes for the provided order lines or order.
+   *
+   * @param path
+   *     the path of the POST request.
+   * @param parameters
+   *     a map of the request parameters.
+   * @param body
+   *     the body of the POST request.
+   * @return a WSResult object containing the result of the operation.
+   * @throws Exception
+   *     if an error occurs during execution.
+   */
   @Override
   public WSResult post(String path, Map<String, String> parameters, JSONObject body) throws Exception {
     WSResult wsResult = new WSResult();
@@ -273,6 +310,17 @@ public class CopilotWSServlet extends BaseWebService {
     return wsResult;
   }
 
+  /**
+   * Recalculates the taxes for the provided order or order lines.
+   *
+   * @param body
+   *     a JSONObject containing the order or order line information.
+   * @param wsResult
+   *     a WSResult object to store the result of the operation.
+   * @return a WSResult object containing the recalculated tax information.
+   * @throws JSONException
+   *     if there is an error processing JSON data.
+   */
   private WSResult calcTaxes(JSONObject body, WSResult wsResult) throws JSONException {
     ArrayList<OrderLine> orderLinesList = new ArrayList<>();
     if (body.has("orderLineId")) {
@@ -307,6 +355,13 @@ public class CopilotWSServlet extends BaseWebService {
     return wsResult;
   }
 
+  /**
+   * Recalculates the taxes and prices for a specific order line.
+   *
+   * @param orderLine
+   *     the order line to recalculate.
+   * @return a String message indicating the result of the recalculation.
+   */
   public static String recalcTaxes(OrderLine orderLine) {
     try {
       Order order = orderLine.getSalesOrder();
@@ -389,6 +444,20 @@ public class CopilotWSServlet extends BaseWebService {
     return "Taxes recalculated successfully.";
   }
 
+  /**
+   * Searches and sets the appropriate tax rate for a given order line and product.
+   *
+   * @param ol
+   *     the order line to update.
+   * @param order
+   *     the order containing the order line.
+   * @param product
+   *     the product in the order line.
+   * @throws ServletException
+   *     if a servlet error occurs.
+   * @throws IOException
+   *     if an IO error occurs.
+   */
   private static void taxSearchAndSet(OrderLine ol, Order order, Product product) throws ServletException, IOException {
     //formate order.getOrderDate to string year-month-day. Dont use FormatUtilities
     String dateFromat = OBPropertiesProvider.getInstance().getOpenbravoProperties().getProperty("dateFormat.java");
@@ -408,17 +477,54 @@ public class CopilotWSServlet extends BaseWebService {
 
   }
 
-
+  /**
+   * Handles PUT requests to the web service. Currently not implemented.
+   *
+   * @param path
+   *     the path of the PUT request.
+   * @param parameters
+   *     a map of the request parameters.
+   * @param body
+   *     the body of the PUT request.
+   * @return a WSResult object containing the result of the operation.
+   * @throws Exception
+   *     if an error occurs during execution.
+   */
   @Override
   public WSResult put(String path, Map<String, String> parameters, JSONObject body) throws Exception {
     return null;
   }
 
+  /**
+   * Handles DELETE requests to the web service. Currently not implemented.
+   *
+   * @param path
+   *     the path of the DELETE request.
+   * @param parameters
+   *     a map of the request parameters.
+   * @param body
+   *     the body of the DELETE request.
+   * @return a WSResult object containing the result of the operation.
+   * @throws Exception
+   *     if an error occurs during execution.
+   */
   @Override
   public WSResult delete(String path, Map<String, String> parameters, JSONObject body) throws Exception {
     return null;
   }
 
+
+  /**
+   * Retrieves the product price for a given product, price list, and date.
+   *
+   * @param date
+   *     the date of the price.
+   * @param priceList
+   *     the price list.
+   * @param product
+   *     the product for which the price is being retrieved.
+   * @return the ID of the product price, or null if not found.
+   */
   public static String getProductPrice(Date date, PriceList priceList, Product product) {
     try {
       OBContext.setAdminMode(true);
