@@ -7,7 +7,7 @@
 */
 
 group          = "com.etendoerp"
-version        = "1.6.4"
+version        = "1.6.5"
 description    = "Copilot App to perform operations related to purchase flows"
 ext.artifact   = "copilot.openapi.purchase"
 ext.repository = "https://maven.pkg.github.com/etendosoftware/com.etendoerp.copilot.extensions"
