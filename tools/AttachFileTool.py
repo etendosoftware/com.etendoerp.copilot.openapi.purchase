@@ -23,8 +23,8 @@ class AttachFileTool(ToolWrapper):
         description (str): A brief description of the tool.
     """
 
-    name = "AttachFileTool"
-    description = "Uploads a file to an API after checking its existence and accessibility."
+    name: str = "AttachFileTool"
+    description: str = "Uploads a file to an API after checking its existence and accessibility."
     args_schema: Type[ToolInput] = AttachFileInput
     return_direct: bool = False
 
