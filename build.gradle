@@ -52,7 +52,6 @@ repositories {
 * Ex: implementation "com.sun.mail:javax.mail:1.6.2"
 */
 dependencies {
-    implementation('com.etendoerp:copilot.ocrtool:1.6.5')
-    implementation('com.etendoerp:copilot.openapi:1.5.5')
-    implementation('com.etendoerp:copilot:1.8.3')
+    implementation('com.etendoerp:copilot.toolpack:1.4.1')
+    implementation('com.etendoerp:copilot:1.9.1')
 }
